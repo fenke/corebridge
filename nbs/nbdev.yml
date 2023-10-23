@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "corebridge"
+  site-url: "https://fenke.github.io/corebridge"
+  description: "Bridge for Stactics AICore"
+  repo-branch: main
+  repo-url: "https://github.com/fenke/corebridge"
