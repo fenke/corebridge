@@ -1,0 +1,12 @@
+python-dateutil
+pytz
+numpy
+scipy
+scikit-learn
+pandas
+jupyter
+ipywidgets
+jupyterlab>4
+jupyter_contrib_nbextensions
+jupyterlab-git
+jupyterlab-quarto
