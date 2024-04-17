@@ -17,6 +17,9 @@ from fastcore.basics import patch_to, patch
 # %% ../nbs/01_aicorebridge.ipynb 4
 syslog = logging.getLogger(__name__)
 
+# %% ../nbs/01_aicorebridge.ipynb 5
+print(f"loading {__name__}")
+
 # %% ../nbs/01_aicorebridge.ipynb 6
 class AICoreModule(): pass
 
@@ -24,10 +27,12 @@ class AICoreModule(): pass
 @patch
 def __init__(self:AICoreModule, 
              save_dir:str, # path where the module can keep files 
+             assets_dir:str,
              processor:typing.Callable, # data processing function
              *args, **kwargs):
     
     self.save_dir  = save_dir
+    self.assets_dir  = assets_dir
     self._init_processor(processor)
 
     self.init_args = args
@@ -50,6 +55,12 @@ def _init_processor(
 
 
 # %% ../nbs/01_aicorebridge.ipynb 9
+@patch
+def call_processor(self:AICoreModule, calldata, **callargs):
+    return self.processor(calldata, **callargs)
+
+
+# %% ../nbs/01_aicorebridge.ipynb 10
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
     try:
@@ -78,7 +89,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         for arg, val in callargs.items():
             msg.append(f"{arg}: {val}")
             
-        result = self.processor(calldata, **callargs)
+        result = self.call_processor(calldata, **callargs)
         msg.append(f"result shape: {result.shape}")
 
         return {
@@ -96,11 +107,14 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 10
+# %% ../nbs/01_aicorebridge.ipynb 11
 @patch
 def get_callargs(self:AICoreModule, **kwargs):
     "Get arguments for the processor call"
 
+    # Remove null / None values
+    kwargs = {k:v for k,v in kwargs.items() if v is not None}
+    
     metadata = kwargs.pop('metadata', {}) # TODO: historic metadata
 
     return {
@@ -109,7 +123,7 @@ def get_callargs(self:AICoreModule, **kwargs):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 11
+# %% ../nbs/01_aicorebridge.ipynb 12
 @patch
 def get_call_data(
         self:AICoreModule, 
@@ -159,7 +173,7 @@ def get_call_data(
         return df.reset_index().to_numpy()
         
 
-# %% ../nbs/01_aicorebridge.ipynb 12
+# %% ../nbs/01_aicorebridge.ipynb 13
 @patch
 def rewrite_data(
         self:AICoreModule, 
@@ -194,7 +208,7 @@ def rewrite_data(
 
     
 
-# %% ../nbs/01_aicorebridge.ipynb 13
+# %% ../nbs/01_aicorebridge.ipynb 14
 @patch
 def convert_to_dataframe(
         self:AICoreModule, 
