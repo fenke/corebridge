@@ -26,9 +26,9 @@ class AICoreModule(): pass
 # %% ../nbs/01_aicorebridge.ipynb 7
 @patch
 def __init__(self:AICoreModule, 
+             processor:typing.Callable, # data processing function
              save_dir:str, # path where the module can keep files 
              assets_dir:str,
-             processor:typing.Callable, # data processing function
              *args, **kwargs):
     
     self.save_dir  = save_dir
