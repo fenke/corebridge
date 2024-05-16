@@ -7,6 +7,7 @@ __all__ = ['syslog', 'AICoreModule']
 import typing
 import logging
 import inspect
+import traceback
 import datetime
 import json
 import pandas as pd
@@ -31,29 +32,29 @@ class AICoreModule(): pass
 
 # %% ../nbs/01_aicorebridge.ipynb 8
 @patch
-def __init__(self:AICoreModule, 
+def __init__(self:AICoreModule,
              processor:typing.Callable, # data processing function
-             save_dir:str, # path where the module can keep files 
+             save_dir:str, # path where the module can keep files
              assets_dir:str,
              *args, **kwargs):
-    
+
     self.init_time = datetime.datetime.utcnow()
     self.save_dir   = save_dir
     self.assets_dir = assets_dir
     self._init_processor(processor)
 
     self.init_args = args
-    self.init_kwargs = kwargs
+    self.init_kwargs = {k:v for k,v in kwargs.items() if v is not None}
 
 
 
 # %% ../nbs/01_aicorebridge.ipynb 9
 @patch
 def _init_processor(
-        self:AICoreModule, 
+        self:AICoreModule,
         processor:typing.Callable):
     """Initializes processor related variables on self"""
-    
+
     self.processor = processor
     self.processor_signature = inspect.signature(self.processor)
     self.processor_params = dict(self.processor_signature.parameters)
@@ -70,6 +71,7 @@ def call_processor(self:AICoreModule, calldata, **callargs):
 # %% ../nbs/01_aicorebridge.ipynb 11
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
+    msg=[]
     try:
 
         msg=[
@@ -84,18 +86,18 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         msg.append(f"lastSeen: {lastSeen}, recordformat: {recordformat}, timezone: {timezone}")
 
         calldata = self.get_call_data(
-            data, 
+            data,
             recordformat=recordformat,
             timezone=timezone,
             reversed=reversed)
-        
+
         msg.append(f"calldata shape: {calldata.shape}")
 
-        callargs = self.get_callargs(**kwargs)
+        callargs = self.get_callargs(**kwargs, **self.directory_args)
 
         for arg, val in callargs.items():
             msg.append(f"{arg}: {val}")
-            
+
         result = self.call_processor(calldata, **callargs)
         msg.append(f"result shape: {result.shape}")
 
@@ -107,21 +109,24 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
                 timezone=timezone,
                 reversed=reversed)
         }
+
     except Exception as err:
+        msg.append(''.join(traceback.format_exception(None, err, err.__traceback__)))
+        syslog.exception(f"Exception {str(err)} in infer()")
         return {
-            'msg': f"Unexpected {err=}, {type(err)=}",
+            'msg': msg,
             'data': []
         }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 12
+# %% ../nbs/01_aicorebridge.ipynb 13
 @patch
 def get_callargs(self:AICoreModule, **kwargs):
     "Get arguments for the processor call"
 
     # Remove null / None values
     kwargs = {k:v for k,v in kwargs.items() if v is not None}
-    
+
     metadata = kwargs.pop('metadata', {}) # TODO: historic metadata
 
     return {
@@ -130,15 +135,15 @@ def get_callargs(self:AICoreModule, **kwargs):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 13
+# %% ../nbs/01_aicorebridge.ipynb 14
 @patch
 def get_call_data(
-        self:AICoreModule, 
-        data:dict, 
-        recordformat='records', 
-        timezone='UTC', 
+        self:AICoreModule,
+        data:dict,
+        recordformat='records',
+        timezone='UTC',
         reversed=False):
-    
+
     "Convert data to the processor signature"
 
     df = core.set_time_index_zone(core.timeseries_dataframe_from_datadict(
@@ -155,4 +160,4 @@ def get_call_data(
     else:
         df.index = (df.index - datetime.datetime(1970,1,1, tzinfo=datetime.timezone.utc)) / datetime.timedelta(seconds=1)
         return df.reset_index().to_numpy()
-        
+
