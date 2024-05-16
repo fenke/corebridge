@@ -14,6 +14,7 @@ import numpy as np
 
 from fastcore.basics import patch_to, patch
 from .core import *
+from . import __version__
 
 
 # %% ../nbs/01_aicorebridge.ipynb 5
@@ -21,7 +22,7 @@ syslog = logging.getLogger(__name__)
 
 # %% ../nbs/01_aicorebridge.ipynb 6
 try:
-    print(f"Loading {__name__} from {__file__}")
+    print(f"Loading {__name__} {__version__} from {__file__}")
 except:
     pass
 
