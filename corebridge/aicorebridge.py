@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['syslog', 'AICoreModule']
 
-# %% ../nbs/01_aicorebridge.ipynb 2
+# %% ../nbs/01_aicorebridge.ipynb 4
 import typing
 import logging
 import inspect
@@ -14,16 +14,22 @@ import numpy as np
 
 from fastcore.basics import patch_to, patch
 
-# %% ../nbs/01_aicorebridge.ipynb 4
-syslog = logging.getLogger(__name__)
+import core
+
 
 # %% ../nbs/01_aicorebridge.ipynb 5
-print(f"loading {__name__}")
+syslog = logging.getLogger(__name__)
 
 # %% ../nbs/01_aicorebridge.ipynb 6
-class AICoreModule(): pass
+try:
+    print(f"Loading {__name__} from {__file__}")
+except:
+    pass
 
 # %% ../nbs/01_aicorebridge.ipynb 7
+class AICoreModule(): pass
+
+# %% ../nbs/01_aicorebridge.ipynb 8
 @patch
 def __init__(self:AICoreModule, 
              processor:typing.Callable, # data processing function
@@ -31,8 +37,9 @@ def __init__(self:AICoreModule,
              assets_dir:str,
              *args, **kwargs):
     
-    self.save_dir  = save_dir
-    self.assets_dir  = assets_dir
+    self.init_time = datetime.datetime.utcnow()
+    self.save_dir   = save_dir
+    self.assets_dir = assets_dir
     self._init_processor(processor)
 
     self.init_args = args
@@ -40,7 +47,7 @@ def __init__(self:AICoreModule,
 
 
 
-# %% ../nbs/01_aicorebridge.ipynb 8
+# %% ../nbs/01_aicorebridge.ipynb 9
 @patch
 def _init_processor(
         self:AICoreModule, 
@@ -54,13 +61,13 @@ def _init_processor(
     self.data_param, *self.call_params = list(self.processor_params.keys())
 
 
-# %% ../nbs/01_aicorebridge.ipynb 9
+# %% ../nbs/01_aicorebridge.ipynb 10
 @patch
 def call_processor(self:AICoreModule, calldata, **callargs):
     return self.processor(calldata, **callargs)
 
 
-# %% ../nbs/01_aicorebridge.ipynb 10
+# %% ../nbs/01_aicorebridge.ipynb 11
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
     try:
@@ -94,7 +101,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
 
         return {
             'msg':msg,
-            'data': self.rewrite_data(
+            'data': core.timeseries_dataframe_to_datadict(
                 result if not lastSeen else result[-1:],
                 recordformat=recordformat,
                 timezone=timezone,
@@ -107,7 +114,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 11
+# %% ../nbs/01_aicorebridge.ipynb 12
 @patch
 def get_callargs(self:AICoreModule, **kwargs):
     "Get arguments for the processor call"
@@ -123,7 +130,7 @@ def get_callargs(self:AICoreModule, **kwargs):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 12
+# %% ../nbs/01_aicorebridge.ipynb 13
 @patch
 def get_call_data(
         self:AICoreModule, 
@@ -134,34 +141,11 @@ def get_call_data(
     
     "Convert data to the processor signature"
 
-    orient = recordformat.lower()
-    assert orient in ['records', 'table']
-    #assert False, "started work on format"
-    
-    if orient == 'records':
-        df = pd.DataFrame.from_records(data)
-        time_column = [C for C in df.columns if C.lower() in ['datetimemeasure', 'time']][0]
-
-    elif orient == 'table':
-        time_column = data['schema']['primaryKey'][0]
-        df = pd.DataFrame.from_dict(data['data']).set_index(data['schema']['primaryKey'])
-        df.index.name = 'time'
-
-    df.columns = [C.lower() for C in df.columns]
-    time_column = [C for C in df.columns if C in ['datetimemeasure', 'time']][0]
-    df[time_column] = pd.to_datetime(df[time_column],utc=True,format='ISO8601')
-    df.set_index(time_column, inplace=True)
-    #df.index = pd.DatetimeIndex(df.index).round('ms')
-    
-    df.index.name = 'time'
+    df = core.set_time_index_zone(core.timeseries_dataframe_from_datadict(
+        data, ['datetimemeasure', 'time'], recordformat), timezone)
 
     if reversed:
         df = df[::-1]
-
-    if not df.index.tz:
-        df.index = df.index.tz_localize('UTC').tz_convert(timezone)
-    elif str(df.index.tz) != timezone:
-        df.index = df.index.tz_convert(timezone)
 
     if self.processor_params[self.data_param].annotation == pd.DataFrame:
         return df
@@ -172,90 +156,3 @@ def get_call_data(
         df.index = (df.index - datetime.datetime(1970,1,1, tzinfo=datetime.timezone.utc)) / datetime.timedelta(seconds=1)
         return df.reset_index().to_numpy()
         
-
-# %% ../nbs/01_aicorebridge.ipynb 13
-@patch
-def rewrite_data(
-        self:AICoreModule, 
-        data:typing.Union[pd.DataFrame, pd.Series, dict], 
-        recordformat:str='split', 
-        timezone:str='UTC', 
-        reversed:bool=False):
-    
-    "Rewrite data to dictionary matching the requested recordformat"
-
-    orient = recordformat.lower()
-
-    if orient == 'split-index':
-        orient = 'split'
-
-    normalized_data = self.convert_to_dataframe(data, timezone=timezone)
-    normalized_data.index = normalized_data.index.map(lambda x: x.isoformat())
-    
-    if reversed:
-        normalized_data = normalized_data[::-1]
-
-    if orient == 'records':
-        records = normalized_data.reset_index().to_dict(orient='records')
-    else:
-        records =  normalized_data.to_dict(orient=orient)
-    
-
-    if normalized_data.isna().any(axis=None):
-        return [ {k:v for k,v in m.items() if pd.notnull(v)} for m in records]
-    else:
-        return records
-
-    
-
-# %% ../nbs/01_aicorebridge.ipynb 14
-@patch
-def convert_to_dataframe(
-        self:AICoreModule, 
-        adata:typing.Union[pd.DataFrame, pd.Series, dict, np.ndarray, np.recarray], 
-        timezone='UTC', 
-        columnnames=None):
-    """Convert various data formats to standardized timeseries DataFrame"""
-
-    if isinstance(adata, pd.DataFrame):
-        df = adata
-    elif isinstance(adata, pd.Series):
-        df = pd.DataFrame(adata)
-
-    elif isinstance(adata, dict):
-        # dict/mapping of individual timeseries
-        df = pd.DataFrame({
-            C:pd.Series(data=A[:,1], index=pd.DatetimeIndex(A[:,0]*1e9)) if isinstance(A, np.ndarray) else A
-            for C,A in adata.items()
-        })
-
-    elif adata.dtype.names is not None:
-        # structured or recarray
-        df = pd.DataFrame(
-            data=adata.view(dtype=np.float64).reshape(adata.shape[0],len(adata.dtype))[:,range(1,len(adata.dtype))],
-            index=pd.DatetimeIndex(adata.view(dtype=np.float64).reshape(adata.shape[0],len(adata.dtype))[:,0] * 1e9),
-            columns=adata.dtype.names[1:]
-        )
-
-    else:
-        if adata.shape[0] > 0:
-            if adata.shape[1]>2:
-                columns=[f"value_{str(i+1)}" for i in range(adata.shape[1]-1)] if not columnnames else [f"{str(i)}" for i in columnnames[1:]]
-            else:
-                columns=['value']
-
-            df = pd.DataFrame(
-                data=adata[:, 1:],
-                index=pd.DatetimeIndex(adata[:,0]*1e9),
-                columns=columns
-            )
-        else:
-            return pd.DataFrame()
-
-    df.index.name = 'time'
-    if not df.index.tz:
-        df.index = df.index.tz_localize('UTC').tz_convert(timezone)
-    elif str(df.index.tz) != timezone:
-        df.index = df.index.tz_convert(timezone)
-
-    return df
