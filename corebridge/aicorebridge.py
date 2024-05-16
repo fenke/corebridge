@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 
 from fastcore.basics import patch_to, patch
-
+import corebridge
 
 
 # %% ../nbs/01_aicorebridge.ipynb 5
@@ -100,7 +100,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
 
         return {
             'msg':msg,
-            'data': core.timeseries_dataframe_to_datadict(
+            'data': corebridge.core.timeseries_dataframe_to_datadict(
                 result if not lastSeen else result[-1:],
                 recordformat=recordformat,
                 timezone=timezone,
@@ -140,7 +140,7 @@ def get_call_data(
     
     "Convert data to the processor signature"
 
-    df = core.set_time_index_zone(core.timeseries_dataframe_from_datadict(
+    df = corebridge.core.set_time_index_zone(corebridge.core.timeseries_dataframe_from_datadict(
         data, ['datetimemeasure', 'time'], recordformat), timezone)
 
     if reversed:
