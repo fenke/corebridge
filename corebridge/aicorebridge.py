@@ -7,6 +7,7 @@ __all__ = ['syslog', 'AICoreModule']
 import typing
 import logging
 import inspect
+import traceback
 import datetime
 import json
 import pandas as pd
@@ -23,7 +24,7 @@ print(f"loading {__name__}")
 # %% ../nbs/01_aicorebridge.ipynb 6
 class AICoreModule(): pass
 
-# %% ../nbs/01_aicorebridge.ipynb 7
+# %% ../nbs/01_aicorebridge.ipynb 8
 @patch
 def __init__(self:AICoreModule, 
              processor:typing.Callable, # data processing function
@@ -31,16 +32,19 @@ def __init__(self:AICoreModule,
              assets_dir:str,
              *args, **kwargs):
     
-    self.save_dir  = save_dir
-    self.assets_dir  = assets_dir
+    self.directory_args = dict(
+        save_dir=save_dir,
+        assets_dir=assets_dir
+    )
+    
     self._init_processor(processor)
 
     self.init_args = args
-    self.init_kwargs = kwargs
+    self.init_kwargs = {k:v for k,v in kwargs.items() if v is not None}
 
 
 
-# %% ../nbs/01_aicorebridge.ipynb 8
+# %% ../nbs/01_aicorebridge.ipynb 10
 @patch
 def _init_processor(
         self:AICoreModule, 
@@ -54,15 +58,16 @@ def _init_processor(
     self.data_param, *self.call_params = list(self.processor_params.keys())
 
 
-# %% ../nbs/01_aicorebridge.ipynb 9
+# %% ../nbs/01_aicorebridge.ipynb 11
 @patch
 def call_processor(self:AICoreModule, calldata, **callargs):
     return self.processor(calldata, **callargs)
 
 
-# %% ../nbs/01_aicorebridge.ipynb 10
+# %% ../nbs/01_aicorebridge.ipynb 12
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
+    msg=[]
     try:
 
         msg=[
@@ -84,7 +89,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         
         msg.append(f"calldata shape: {calldata.shape}")
 
-        callargs = self.get_callargs(**kwargs)
+        callargs = self.get_callargs(**kwargs, **self.directory_args)
 
         for arg, val in callargs.items():
             msg.append(f"{arg}: {val}")
@@ -100,14 +105,17 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
                 timezone=timezone,
                 reversed=reversed)
         }
+
     except Exception as err:
+        msg.append(''.join(traceback.format_exception(None, err, err.__traceback__)))
+        syslog.exception(f"Exception {str(err)} in infer()")
         return {
-            'msg': f"Unexpected {err=}, {type(err)=}",
+            'msg': msg,
             'data': []
         }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 11
+# %% ../nbs/01_aicorebridge.ipynb 13
 @patch
 def get_callargs(self:AICoreModule, **kwargs):
     "Get arguments for the processor call"
@@ -123,7 +131,7 @@ def get_callargs(self:AICoreModule, **kwargs):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 12
+# %% ../nbs/01_aicorebridge.ipynb 14
 @patch
 def get_call_data(
         self:AICoreModule, 
@@ -173,7 +181,7 @@ def get_call_data(
         return df.reset_index().to_numpy()
         
 
-# %% ../nbs/01_aicorebridge.ipynb 13
+# %% ../nbs/01_aicorebridge.ipynb 15
 @patch
 def rewrite_data(
         self:AICoreModule, 
@@ -190,10 +198,11 @@ def rewrite_data(
         orient = 'split'
 
     normalized_data = self.convert_to_dataframe(data, timezone=timezone)
-    normalized_data.index = normalized_data.index.map(lambda x: x.isoformat())
+
+    if isinstance(normalized_data.index, pd.DatetimeIndex):
+        normalized_data.index = normalized_data.index.map(lambda x: x.isoformat())
     
-    if reversed:
-        normalized_data = normalized_data[::-1]
+    normalized_data.sort_index(ascending=not bool(reversed), inplace=True)
 
     if orient == 'records':
         records = normalized_data.reset_index().to_dict(orient='records')
@@ -208,7 +217,7 @@ def rewrite_data(
 
     
 
-# %% ../nbs/01_aicorebridge.ipynb 14
+# %% ../nbs/01_aicorebridge.ipynb 16
 @patch
 def convert_to_dataframe(
         self:AICoreModule, 
@@ -252,10 +261,11 @@ def convert_to_dataframe(
         else:
             return pd.DataFrame()
 
-    df.index.name = 'time'
-    if not df.index.tz:
-        df.index = df.index.tz_localize('UTC').tz_convert(timezone)
-    elif str(df.index.tz) != timezone:
-        df.index = df.index.tz_convert(timezone)
+    if isinstance(df.index, pd.DatetimeIndex):
+        df.index.name = 'time'
+        if not df.index.tz:
+            df.index = df.index.tz_localize('UTC').tz_convert(timezone)
+        elif str(df.index.tz) != timezone:
+            df.index = df.index.tz_convert(timezone)
 
     return df
