@@ -6,17 +6,19 @@
 This package provides functions and classes to run wodan style
 processing functions in the Stactics AICore environment.
 
-## Install
+## Installation
+
+Use
 
 ``` sh
 pip install corebridge
 ```
 
+to install corebrdige.
+
 ## How to use
 
 ### Introduction
-
-#### Wodan processing functions
 
 Wodan is a proprietary backend service that applies high performance,
 custom analytical processing to timeseries data in the Whysor data and
@@ -38,13 +40,17 @@ def multiply(data:np.ndarray, multiplier:float=1.0):
     
 ```
 
-#### AICore modules
+Wodan binds this function to a service endpoint and takes care of
+fetching data and parameters and converting the result for the caller.
 
-For AICore one defines a class, always named `Module` with a constructor
-`__init__` and a method `infer`.
+### AICore modules
+
+For AICore users define a class, always named `Module` with a
+constructor `__init__` and a method `infer`.
 
 This package defines a baseclass to quickly construct a custom `Module`
-class that uses a wodan processor function inside the AICore system:
+class that is able to use a wodan processor function inside the AICore
+system:
 
 ``` {python}
 import numpy as np
@@ -55,23 +61,32 @@ def multiply(data:np.ndarray, multiplier:float=1.0):
 
 class Module(corebridge.aicorebridge.AICoreModule):
     def __init__(self, save_dir, assets_dir, *args, **kwargs):
-        super().__init__(read, save_dir, assets_dir, *args, **kwargs)
+        super().__init__(multiply, save_dir, assets_dir, *args, **kwargs)
     
 ```
 
 That’s it. Well, you can add parameters to `__init__` that can be used
-as hyperparameters and you could override `infer` for the same reason.
+as hyperparameters in the web-interface and you could override `infer`
+for the same reason. The baseclass takes care of converting call
+parameters and data to the function specification and, calls the
+function and converts the result for the caller, similar to the original
+Wodan service.
 
-``` python
-```
+## Development
 
-    2
+Setup a virtual environment, activate it and install the development
+package and dependencies with, on linux
 
-## nbdev cycle
+        pip install -e ‘.\[dev\]’
+
+or on Windows
+
+        pip install -e .\[dev\]
+
+### nbdev cycle
 
 - edit
 - nbdev_export
-- pip install -e ‘.\[dev\]’
 - nbdev_test
 - nbdev_clean
 - nbdev_readme

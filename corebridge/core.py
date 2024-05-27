@@ -95,15 +95,17 @@ def timeseries_dataframe_from_datadict(
     
     if orient == 'records':
         df = pd.DataFrame.from_records(data)
-        time_column = [C for C in df.columns if C.lower() in timecolumns][0]
+        time_column = [C for C in df.columns if C in timecolumns][0]
 
     elif orient == 'table':
         time_column = data['schema']['primaryKey'][0]
         df = pd.DataFrame.from_dict(data['data']).set_index(data['schema']['primaryKey'])
         df.index.name = 'time'
+    else:
+        time_column = [C for C in df.columns if C in timecolumns][0]
 
-    df.columns = [C.lower() for C in df.columns]
-    time_column = [C for C in df.columns if C in timecolumns][0]
+
+    df.columns = list(df.columns)
     df[time_column] = pd.to_datetime(df[time_column],utc=True,format='ISO8601')
     df.set_index(time_column, inplace=True)
     #df.index = pd.DatetimeIndex(df.index).round('ms')
