@@ -6,6 +6,7 @@ __all__ = ['syslog', 'AICoreModule']
 # %% ../nbs/01_aicorebridge.ipynb 4
 import typing
 import logging
+import traceback
 import inspect
 import datetime
 import json
@@ -37,13 +38,15 @@ def __init__(self:AICoreModule,
              assets_dir:str,
              *args, **kwargs):
     
-    self.init_time = datetime.datetime.utcnow()
-    self.save_dir   = save_dir
-    self.assets_dir = assets_dir
+    self.init_time = datetime.datetime.now(datetime.UTC)
     self._init_processor(processor)
 
     self.init_args = args
-    self.init_kwargs = kwargs
+    self.init_kwargs = dict(
+        **kwargs,
+        assets_dir=assets_dir,
+        save_dir=save_dir
+    )
 
 
 
@@ -62,18 +65,20 @@ def _init_processor(
 
 
 # %% ../nbs/01_aicorebridge.ipynb 10
+# can be overloaded
 @patch
 def call_processor(self:AICoreModule, calldata, **callargs):
     return self.processor(calldata, **callargs)
 
 
-# %% ../nbs/01_aicorebridge.ipynb 11
+# %% ../nbs/01_aicorebridge.ipynb 12
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
     try:
 
         msg=[
-            f"{self.processor.__name__}({self.processor_signature})",
+            f"Startup time: {self.init_time.isoformat()}",
+            f"{self.processor.__name__}({self.processor_signature})",             
             f"init_args: {self.init_args}, init_kwargs: {self.init_kwargs}",
         ]
 
@@ -108,13 +113,15 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
                 reversed=reversed)
         }
     except Exception as err:
+        msg.append(''.join(traceback.format_exception(None, err, err.__traceback__)))
+        syslog.exception(f"Exception {str(err)} in infer()")
         return {
             'msg': f"Unexpected {err=}, {type(err)=}",
             'data': []
         }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 12
+# %% ../nbs/01_aicorebridge.ipynb 14
 @patch
 def get_callargs(self:AICoreModule, **kwargs):
     "Get arguments for the processor call"
@@ -125,12 +132,23 @@ def get_callargs(self:AICoreModule, **kwargs):
     metadata = kwargs.pop('metadata', {}) # TODO: historic metadata
 
     return {
-        K:self.processor_signature.parameters[K].annotation(kwargs.get(K,metadata.get(K, self.init_kwargs.get(K, self.processor_signature.parameters[K].default))))
+        K:self.processor_signature.parameters[K].annotation(
+            kwargs.get(
+                K,
+                metadata.get(
+                    K, 
+                    self.init_kwargs.get(
+                        K, 
+                        self.processor_signature.parameters[K].default
+                    )
+                )
+            )
+        )
         for K in self.call_params
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 13
+# %% ../nbs/01_aicorebridge.ipynb 15
 @patch
 def get_call_data(
         self:AICoreModule, 
@@ -142,7 +160,7 @@ def get_call_data(
     "Convert data to the processor signature"
 
     df = set_time_index_zone(timeseries_dataframe_from_datadict(
-        data, ['datetimemeasure', 'time'], recordformat), timezone)
+        data, ['datetimeMeasure', 'time'], recordformat), timezone)
 
     if reversed:
         df = df[::-1]
