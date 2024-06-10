@@ -133,11 +133,11 @@ def get_callargs(self:AICoreModule, **kwargs):
 
     return {
         K:self.processor_signature.parameters[K].annotation(
-            kwargs.get(
+            self.init_kwargs.get(
                 K,
-                metadata.get(
-                    K, 
-                    self.init_kwargs.get(
+                kwargs.get(
+                    K,
+                    metadata.get(
                         K, 
                         self.processor_signature.parameters[K].default
                     )

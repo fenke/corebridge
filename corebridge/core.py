@@ -16,11 +16,11 @@ try:
 except:
     pass
 
-# %% ../nbs/00_core.ipynb 6
+# %% ../nbs/00_core.ipynb 7
 def set_time_index_zone(df:pd.DataFrame, timezone):
     if isinstance(df.index, pd.DatetimeIndex):
         df.index.name = 'time'
-        if not hasattr(df.index, 'tz'):
+        if not hasattr(df.index, 'tz')  or not df.index.tz or not df.index.tz:
             df.index = df.index.tz_localize('UTC').tz_convert(timezone)
         elif str(df.index.tz) != timezone:
             df.index = df.index.tz_convert(timezone)
@@ -28,13 +28,13 @@ def set_time_index_zone(df:pd.DataFrame, timezone):
     return df
 
 
-# %% ../nbs/00_core.ipynb 7
+# %% ../nbs/00_core.ipynb 9
 def timeseries_dataframe(
         data:typing.Union[pd.DataFrame, pd.Series, dict, np.ndarray, np.recarray], 
         timezone='UTC', 
         columnnames=None):
     
-    """Convert various data formats to timeseries DataFrame"""
+    """Convert various tabular data formats to timeseries DataFrame"""
 
     if isinstance(data, pd.DataFrame):
         df = data
@@ -76,7 +76,7 @@ def timeseries_dataframe(
 
     return set_time_index_zone(df, timezone)
 
-# %% ../nbs/00_core.ipynb 8
+# %% ../nbs/00_core.ipynb 11
 def timeseries_dataframe_from_datadict(
         data:dict, 
         timecolumns,
@@ -107,7 +107,7 @@ def timeseries_dataframe_from_datadict(
     return df
 
 
-# %% ../nbs/00_core.ipynb 9
+# %% ../nbs/00_core.ipynb 15
 def timeseries_dataframe_to_datadict(
         data:typing.Union[pd.DataFrame, pd.Series, dict], 
         recordformat:str='split', 
