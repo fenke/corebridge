@@ -45,10 +45,10 @@ fetching data and parameters and converting the result for the caller.
 
 ### AICore modules
 
-For AICore users define a class, always named `Module` with a
+For AICore users define a class, always named `CustomModule` with a
 constructor `__init__` and a method `infer`.
 
-This package defines a baseclass to quickly construct a custom `Module`
+This package defines a baseclass to quickly construct a `CustomModule`
 class that is able to use a wodan processor function inside the AICore
 system:
 
@@ -59,7 +59,7 @@ import corebridge
 def multiply(data:np.ndarray, multiplier:float=1.0):
     return data * multiplier
 
-class Module(corebridge.aicorebridge.AICoreModule):
+class CustomModule(corebridge.aicorebridge.AICoreModule):
     def __init__(self, save_dir, assets_dir, *args, **kwargs):
         super().__init__(multiply, save_dir, assets_dir, *args, **kwargs)
     
@@ -74,22 +74,78 @@ Wodan service.
 
 ## Development
 
+### NBDev
+
+This library is developed with [NBDev](https://nbdev.fast.ai/) - a
+literate programming toolkit that supports developing code using jupyter
+notebooks and mix code with documentation.
+
+Literate programming is a methodology - introduced in 1984 by Donald
+Knuth - that combines a programming language with a documentation
+language. In this approach, a program is explained in a human language
+(such as English) alongside code snippets. The literate source file is
+then processed by a preprocessor to produce both source code and
+formatted documentation.
+
+This paradigm enhances program robustness, portability, and
+maintainability, making it a valuable tool in scientific computing and
+data science[^1]
+
+### Quarto
+
+Documentation is prepared from the notebook with
+[Quarto](https://quarto.org/). Quarto too combines code with
+documentation but it does not extract source code into modules like
+nbdev.
+
+### Installation
+
+#### Quarto
+
+Quarto uses Pandoc and, for pdf format, LaTeX. These must be available
+on your system.
+
+Install [Quarto](https://quarto.org/docs/get-started/) as you see fit,
+there is a [VSCode
+extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto)
+which handles this.
+
+#### NBDev
+
+NBDev is available as PyPi package and is installed with
+
+    pip install nbdev
+
+or if you are using conda
+
+    conda install -c fastai -y nbdev
+
+If so desired you can let NBDev install Quarto with
+
+    nbdev_install_quarto
+
+But this ask for the system admin password.
+
+### Local editing & testing
+
 Setup a virtual environment, activate it and install the development
 package and dependencies with, on linux
 
-        pip install -e ‘.\[dev\]’
+        pip install -e ‘.[dev]’
 
 or on Windows
 
-        pip install -e .\[dev\]
+        pip install -e .[dev]
 
 ### nbdev cycle
 
 - edit
-- nbdev_export
-- nbdev_test
-- nbdev_clean
-- nbdev_readme
 - nbdev_prepare
-- git add .
-- 
+
+The latter performs - nbdev_export - nbdev_test - nbdev_clean -
+nbdev_readme
+
+Then commit and to upload to Pypi with `nbdev_pypi`
+
+[^1]: [Wikipedia on ‘Literate
+    Programming’](https://en.wikipedia.org/wiki/Literate_programming)

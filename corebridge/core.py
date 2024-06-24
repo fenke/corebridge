@@ -158,6 +158,9 @@ ResamplerMethods = dict(
     sum=lambda R: R.sum(),
     std=lambda R: R.std(),
     var=lambda R: R.var(),
+    cumsum=lambda R: R.cumsum(),
+    cummax=lambda R: R.cummax(),
+    cummin=lambda R: R.cummin(),
 
 )
 

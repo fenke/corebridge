@@ -183,7 +183,6 @@ def init_annotated_param(self:AICoreModule, K, value):
     "Get arguments for the processor call"
 
     annotation = self.processor_signature.parameters[K].annotation
-    print(K, annotation, value)
 
     for T in typing.get_args(annotation):
         try:
@@ -197,7 +196,6 @@ def init_annotated_param(self:AICoreModule, K, value):
     except TypeError as err:
         syslog.exception(f"Exception {str(err)} in fallback conversion to {self.processor_signature.parameters[K].annotation} of {type(value)}")
 
-    return None
  
 
 # %% ../nbs/01_aicorebridge.ipynb 19
