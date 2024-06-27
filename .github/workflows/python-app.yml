@@ -37,3 +37,9 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+  test:
+    runs-on: ubuntu-latest
+    steps: 
+    - uses: fastai/workflows/nbdev-ci@master
+      with:
+        python-version: "3.11"
