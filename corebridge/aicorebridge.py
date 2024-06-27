@@ -117,14 +117,15 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
             f"init_args: {self.init_args}, init_kwargs: {self.init_kwargs}",
         ]
 
+        # Pickup params, pop those that are not intended for the processor
         lastSeen = kwargs.pop('lastSeen', False)
         recordformat = kwargs.pop('format', "records").lower()
-        reversed = kwargs.pop('reversed', False)
         timezone = kwargs.get('timezone', 'UTC')
         msg.append(f"lastSeen: {lastSeen}, recordformat: {recordformat}, timezone: {timezone}")
 
-        samplerPeriod = kwargs.pop('samplerPeriod', 'h')
-        samplerMethod = kwargs.pop('samplerMethod', None)
+        samplerPeriod = kwargs.pop('samplerPeriod', self.init_kwargs.get('samplerPeriod','h'))
+        samplerMethod = kwargs.pop('samplerMethod', self.init_kwargs.get('samplerMethod',None))
+        reversed = kwargs.pop('reversed', False)
 
         calldata = self.get_call_data(
             data, 
@@ -140,18 +141,22 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         for arg, val in callargs.items():
             msg.append(f"{arg}: {val}")
             
-        result = self.call_processor(calldata, **callargs)
+        result = timeseries_dataframe(
+            self.call_processor(
+                calldata, 
+                **callargs), 
+            timezone=timezone)
+        
         msg.append(f"result shape: {result.shape}")
-
-        result = timeseries_dataframe(result, timezone=timezone)
-        if reversed:
-            result = result[::-1]
 
         if samplerMethod:
             msg.append(f"Sampler: {samplerMethod}, period: {samplerPeriod}")
             result = timeseries_dataframe_resample(result, samplerPeriod, samplerMethod)
 
         msg.append(f"return-data shape: {result.shape}")
+
+        if reversed:
+            result = result[::-1]
 
         return {
             'msg':msg,
@@ -171,6 +176,8 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
 
 
 # %% ../nbs/01_aicorebridge.ipynb 17
+# Specialized types for initializing annotated parameters
+# Add types by adding a tuple with the type name and a builder function
 annotated_arg_builders = {
     str(B[0]):B[1] for B in [
         (numpy.ndarray, lambda X: numpy.array(X, dtype=X.dtype))
@@ -179,22 +186,28 @@ annotated_arg_builders = {
 
 # %% ../nbs/01_aicorebridge.ipynb 18
 @patch
-def init_annotated_param(self:AICoreModule, K, value):
-    "Get arguments for the processor call"
+def init_annotated_param(self:AICoreModule, param_name, value):
+    """
+    Initialize argument for the processor call
+    
+    param_name: name of the parameter to be initialized
+    value: value of the parameter read from infer data to be used for initialization
+    
+    """
 
-    annotation = self.processor_signature.parameters[K].annotation
+    annotation = self.processor_signature.parameters[param_name].annotation
 
+    # try to convert value to one of the types in the annotation
     for T in typing.get_args(annotation):
         try:
             builder = annotated_arg_builders.get(str(T), T)
             return builder(value)
         except TypeError as err:
-            #syslog.exception(f"Exception {str(err)} in conversion to {T} of {type(value)}")
             continue
     try:
-        return self.processor_signature.parameters[K].annotation(value)
+        return annotation(value)
     except TypeError as err:
-        syslog.exception(f"Exception {str(err)} in fallback conversion to {self.processor_signature.parameters[K].annotation} of {type(value)}")
+        syslog.exception(f"Exception {str(err)} in fallback conversion to {annotation} of {type(value)}")
 
  
 
@@ -224,7 +237,7 @@ def get_callargs(self:AICoreModule, kwargs, history):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 22
+# %% ../nbs/01_aicorebridge.ipynb 23
 @patch
 def get_call_data(
         self:AICoreModule, 
