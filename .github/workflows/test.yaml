@@ -3,5 +3,5 @@ on:  [workflow_dispatch, pull_request, push]
 
 jobs:
   test:
-    runs-on: python:3-bookworm
+    runs-on: ubuntu-latest
     steps: [uses: fastai/workflows/nbdev-ci@master]

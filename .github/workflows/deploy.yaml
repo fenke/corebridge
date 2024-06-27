@@ -10,5 +10,5 @@ on:
   workflow_dispatch:
 jobs:
   deploy:
-    runs-on: python:3-bookworm
+    runs-on: ubuntu-latest
     steps: [uses: fastai/workflows/quarto-ghp@master]
