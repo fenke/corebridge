@@ -29,8 +29,23 @@ try:
 except:
     pass
 
-# %% ../nbs/01_aicorebridge.ipynb 7
-def build_historic_args(data, history):
+# %% ../nbs/01_aicorebridge.ipynb 8
+def build_historic_args(data:pd.DataFrame, history:dict|list) -> dict:
+    """Create a timeseries DataFrame from historic data defined in `history`.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        The input time-series DataFrame.
+    history : dict or list of dicts
+        Historic data definition, each item in the list is a dictionary with a startDate key to set the start of a section of historic data in the result and a column-value pair for each of the columns in the 
+
+    Returns
+    -------
+    historic_data : dict
+        Historic data in dictionary format where keys are column names and values are the historic values as numpy array.
+    """
+
     if not history:
         return {}
     
@@ -62,10 +77,10 @@ def build_historic_args(data, history):
     #return pd.DataFrame(column_data, index=data.index)
 
 
-# %% ../nbs/01_aicorebridge.ipynb 10
+# %% ../nbs/01_aicorebridge.ipynb 12
 class AICoreModule(): pass
 
-# %% ../nbs/01_aicorebridge.ipynb 11
+# %% ../nbs/01_aicorebridge.ipynb 13
 @patch
 def __init__(self:AICoreModule, 
              processor:typing.Callable, # data processing function
@@ -85,7 +100,7 @@ def __init__(self:AICoreModule,
 
 
 
-# %% ../nbs/01_aicorebridge.ipynb 12
+# %% ../nbs/01_aicorebridge.ipynb 14
 @patch
 def _init_processor(
         self:AICoreModule, 
@@ -99,14 +114,14 @@ def _init_processor(
     self.data_param, *self.call_params = list(self.processor_params.keys())
 
 
-# %% ../nbs/01_aicorebridge.ipynb 13
+# %% ../nbs/01_aicorebridge.ipynb 15
 # can be overloaded
 @patch
 def call_processor(self:AICoreModule, calldata, **callargs):
     return self.processor(calldata, **callargs)
 
 
-# %% ../nbs/01_aicorebridge.ipynb 15
+# %% ../nbs/01_aicorebridge.ipynb 17
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
     try:
@@ -175,7 +190,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 17
+# %% ../nbs/01_aicorebridge.ipynb 19
 # Specialized types for initializing annotated parameters
 # Add types by adding a tuple with the type name and a builder function
 annotated_arg_builders = {
@@ -184,7 +199,7 @@ annotated_arg_builders = {
     ]
 }
 
-# %% ../nbs/01_aicorebridge.ipynb 18
+# %% ../nbs/01_aicorebridge.ipynb 20
 @patch
 def init_annotated_param(self:AICoreModule, param_name, value):
     """
@@ -211,7 +226,7 @@ def init_annotated_param(self:AICoreModule, param_name, value):
 
  
 
-# %% ../nbs/01_aicorebridge.ipynb 19
+# %% ../nbs/01_aicorebridge.ipynb 21
 @patch
 def get_callargs(self:AICoreModule, kwargs, history):
     "Get arguments for the processor call"
@@ -237,7 +252,7 @@ def get_callargs(self:AICoreModule, kwargs, history):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 23
+# %% ../nbs/01_aicorebridge.ipynb 25
 @patch
 def get_call_data(
         self:AICoreModule, 
