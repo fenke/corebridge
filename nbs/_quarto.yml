@@ -10,10 +10,6 @@ format:
       dark: darkly
     toc: true
     toc-depth: 4
-  pdf:
-    toc: true
-    toc-depth: 3
-    output-ext:  "pdf"
 
 website:
   twitter-card: true
