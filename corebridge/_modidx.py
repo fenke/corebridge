@@ -31,4 +31,6 @@ d = { 'settings': { 'branch': 'main',
                                  'corebridge.core.timeseries_dataframe_resample': ( 'core.html#timeseries_dataframe_resample',
                                                                                     'corebridge/core.py'),
                                  'corebridge.core.timeseries_dataframe_to_datadict': ( 'core.html#timeseries_dataframe_to_datadict',
-                                                                                       'corebridge/core.py')}}}
+                                                                                       'corebridge/core.py')},
+            'corebridge.rscript': { 'corebridge.rscript.check_script_inputs': ( 'rscriptbridge.html#check_script_inputs',
+                                                                                'corebridge/rscript.py')}}}
