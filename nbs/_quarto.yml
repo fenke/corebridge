@@ -3,9 +3,17 @@ project:
 
 format:
   html:
-    theme: cosmo
+    title-block-banner: '#3e5665'
     css: styles.css
+    theme:
+      light: flatly
+      dark: darkly
     toc: true
+    toc-depth: 4
+  pdf:
+    toc: true
+    toc-depth: 3
+    output-ext:  "pdf"
 
 website:
   twitter-card: true
@@ -16,5 +24,9 @@ website:
     search: true
   sidebar:
     style: floating
+
+monofont: 'Source Code Pro'
+monofontoptions: 
+  - Scale=0.6
 
 metadata-files: [nbdev.yml, sidebar.yml]
