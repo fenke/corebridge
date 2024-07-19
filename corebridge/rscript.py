@@ -5,11 +5,11 @@ __all__ = ['get_asset_path', 'get_save_path', 'install_R_package', 'calc_hash_fr
            'check_script_inputs', 'check_script_output', 'generate_checksum_file', 'run_script']
 
 # %% ../nbs/02_rscriptbridge.ipynb 4
-import json, os, fcntl, time
+import json, os, fcntl
 import subprocess
 import hashlib
 
-from functools import reduce
+#from corebridge.aicorebridge import AICoreModule
 
 # %% ../nbs/02_rscriptbridge.ipynb 7
 def get_asset_path(script_name, assets_dir:str): 
