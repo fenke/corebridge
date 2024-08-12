@@ -6,7 +6,7 @@ __all__ = ['syslog', 'read_chunk_size', 'RScriptProcess', 'get_asset_path', 'get
            'calc_hash_from_data_files', 'check_script_inputs', 'check_script_output', 'generate_checksum_file',
            'run_rscript_wait', 'run_rscript_nowait']
 
-# %% ../nbs/02_rscriptbridge.ipynb 4
+# %% ../nbs/02_rscriptbridge.ipynb 5
 import json, os, fcntl, logging
 import subprocess
 import hashlib
@@ -14,17 +14,17 @@ from collections import namedtuple
 
 from .aicorebridge import AICoreModule
 
-# %% ../nbs/02_rscriptbridge.ipynb 6
+# %% ../nbs/02_rscriptbridge.ipynb 7
 syslog = logging.getLogger(__name__)
 
-# %% ../nbs/02_rscriptbridge.ipynb 8
+# %% ../nbs/02_rscriptbridge.ipynb 9
 def get_asset_path(script_name, assets_dir:str): 
     return os.path.join(assets_dir, script_name)
 def get_save_path(datafile_name, save_dir): 
     return os.path.join(save_dir, datafile_name)
 
 
-# %% ../nbs/02_rscriptbridge.ipynb 35
+# %% ../nbs/02_rscriptbridge.ipynb 37
 def install_R_package(pkg:str|list):
     """
     Checks and if neccesary installs an R package
@@ -39,6 +39,7 @@ def install_R_package(pkg:str|list):
         pkg = [pkg]
 
     for pkg_i in pkg:
+        print(f"Installing package {pkg_i} ...")
         run_script_result = subprocess.run(['Rscript','-e', f"library({pkg_i})"], capture_output=True)
         if run_script_result.returncode != 0:
             print(f"Installing {pkg_i}")
@@ -50,7 +51,7 @@ def install_R_package(pkg:str|list):
 
 
 
-# %% ../nbs/02_rscriptbridge.ipynb 50
+# %% ../nbs/02_rscriptbridge.ipynb 52
 read_chunk_size = 1024 * 32
 def calc_hash_from_flowobject(flow_object:dict)->str:
     '''Calculate a unique hash for a given flow object'''
@@ -87,7 +88,7 @@ def calc_hash_from_data_files(flow_object:dict, save_dir:str)->str:
     return calc_hash_from_files(flow_object['in'] + flow_object['out'], save_dir)
 
 
-# %% ../nbs/02_rscriptbridge.ipynb 55
+# %% ../nbs/02_rscriptbridge.ipynb 57
 def check_script_inputs(flow_object:dict, save_dir:str)->bool:
     """ 
     Check if the input files for a script are up-to-date, returns True if up-to-date.
@@ -101,7 +102,7 @@ def check_script_inputs(flow_object:dict, save_dir:str)->bool:
     
     return int(md5_check_result.returncode) == 0
 
-# %% ../nbs/02_rscriptbridge.ipynb 58
+# %% ../nbs/02_rscriptbridge.ipynb 60
 def check_script_output(flow_object:dict, save_dir:str)->bool:
     """ 
     Check if the output files for a script exist, returns True if they all exist.
@@ -112,7 +113,7 @@ def check_script_output(flow_object:dict, save_dir:str)->bool:
         for F in flow_object['out']
     ])
 
-# %% ../nbs/02_rscriptbridge.ipynb 61
+# %% ../nbs/02_rscriptbridge.ipynb 63
 def generate_checksum_file(flow_object:dict, save_dir:str)->bool:
     """Generates the checksum file for a given flow object"""
 
@@ -129,7 +130,7 @@ def generate_checksum_file(flow_object:dict, save_dir:str)->bool:
 
     return md5_encode_result.returncode == 0 and check_script_inputs(flow_object, save_dir)
 
-# %% ../nbs/02_rscriptbridge.ipynb 70
+# %% ../nbs/02_rscriptbridge.ipynb 72
 def run_rscript_wait(flow_object, assets_dir:str, save_dir:str):
     """ Run a script in R 
         args:
@@ -138,7 +139,7 @@ def run_rscript_wait(flow_object, assets_dir:str, save_dir:str):
             bool: True if a follow-up script might need to be run, False if not
 
     """
-    print(f"Running script {flow_object['name']}")
+    syslog.debug(f"Running script {flow_object['name']}")
     # Check if output exists and inputs have not changed and return False if 
     # output exists and inputs have not changed
     if check_script_output(flow_object, save_dir) and check_script_inputs(flow_object, save_dir):
@@ -148,7 +149,7 @@ def run_rscript_wait(flow_object, assets_dir:str, save_dir:str):
     lock_file = get_save_path(f"lock-{calc_hash_from_flowobject(flow_object)}", save_dir)
     with open(lock_file, 'wt') as cf:
         try:
-            print(f"Locking {lock_file}")
+            syslog.debug(f"Locking {lock_file}")
             # Get exclusive lock on the file, is released on file close
             fcntl.flock(cf, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
@@ -167,7 +168,7 @@ def run_rscript_wait(flow_object, assets_dir:str, save_dir:str):
                 return False
 
         except BlockingIOError as locked_error:
-            print(locked_error)
+            syslog.debug(locked_error)
             return False
 
     
@@ -175,7 +176,7 @@ def run_rscript_wait(flow_object, assets_dir:str, save_dir:str):
     return check_script_output(flow_object, save_dir) and generate_checksum_file(flow_object, save_dir)
     
 
-# %% ../nbs/02_rscriptbridge.ipynb 78
+# %% ../nbs/02_rscriptbridge.ipynb 80
 RScriptProcess = namedtuple('RScriptProcess', ['lock_file', 'popen'])
 
 def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str) -> RScriptProcess:
@@ -188,20 +189,22 @@ def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str) -> RScriptProc
             RScriptProcess: Popen container object for the script
     """
     
-    print(f"Starting script {flow_object['name']}")
+    syslog.debug(f"Starting script {flow_object['name']}")
 
     # check lockfile ---------------------------------------------------------------
     lock_name = calc_hash_from_flowobject(flow_object)
     if run_rscript_nowait.lock_objects.get(lock_name): 
         lock_object = run_rscript_nowait.lock_objects[lock_name]
         if not lock_object.lock_file.closed:
-            print(f"Lockfile is open for {flow_object['name']} ({lock_name})")
-
-            if lock_object.popen.poll() is None:
-                print(f"Script is still running for {flow_object['name']} ({lock_name})")
+            syslog.debug(f"Lockfile is open for {flow_object['name']} ({lock_name})")
+            
+            if lock_object.popen is not None:
+                syslog.debug(f"No process running for {flow_object['name']} ({lock_name})")
+            elif lock_object.popen.poll() is None:
+                syslog.debug(f"Script is still running for {flow_object['name']} ({lock_name})")
                 return lock_object
             else:
-                print(f"Script has finished for {flow_object['name']} ({lock_name})")
+                syslog.debug(f"Script has finished for {flow_object['name']} ({lock_name})")
                 # since poll return not-None the script has finished so close the lockfile
                 lock_object.lock_file.close()
 
@@ -209,13 +212,12 @@ def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str) -> RScriptProc
     # Check if output exists and inputs have not changed and return False if 
     # output exists and inputs have not changed
     if check_script_output(flow_object, save_dir) and check_script_inputs(flow_object, save_dir):
-        print(f"Output and inputs are up-to-date for {flow_object['name']}")
+        syslog.debug(f"Output and inputs are up-to-date for {flow_object['name']}")
         return run_rscript_nowait.lock_objects.get(lock_name)
 
     # Create the lock file -----------------------------------------------------------
-    print(f"Creating lockfile for {flow_object['name']} ({lock_name})")
+    syslog.debug(f"Creating lockfile for {flow_object['name']} ({lock_name})")
     cf = open(get_save_path(f"lock-{lock_name}", save_dir), 'wt')
-    run_rscript_nowait.lock_objects[lock_name] = RScriptProcess(cf, None)
     
     try:
         # Set lock on lockfile
@@ -233,11 +235,10 @@ def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str) -> RScriptProc
         run_rscript_nowait.lock_objects[lock_name] =  RScriptProcess(cf, popen)
             
     except BlockingIOError as locked_error:
-        syslog.error(locked_error)
-        print(locked_error)
         cf.close()
+        syslog.error(locked_error)
 
-    print("Done")
+    syslog.debug(f"Done with {flow_object['name']}")
 
     return run_rscript_nowait.lock_objects.get(lock_name)
 

@@ -137,6 +137,13 @@ or on Windows
 
         pip install -e .[dev]
 
+#### Jupyter
+
+The above pip install should also install jupyter but to use it the
+kernel needs to be installed with:
+
+        python -m ipykernel install --user --name=corebridge.venv
+
 ### nbdev cycle
 
 - edit
