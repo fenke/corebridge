@@ -214,7 +214,7 @@ def run_rscript_wait(flow_object, assets_dir:str, save_dir:str):
     
 
 # %% ../nbs/02_rscriptbridge.ipynb 87
-RScriptProcess = namedtuple('RScriptProcess', ['lock_file', 'popen'])
+RScriptProcess = namedtuple('RScriptProcess', ['lock_file', 'popen', 'flow_object'])
 
 
 # %% ../nbs/02_rscriptbridge.ipynb 89
@@ -256,7 +256,7 @@ def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str, pkg_repo:str='
         return run_rscript_nowait.lock_objects.get(lock_name)
 
     # Create the lock file -----------------------------------------------------------
-    syslog.debug(f"Creating lockfile for {flow_object['name']} ({lock_name})")
+    syslog.debug(f"Preparing to run scripts for {flow_object['name']}, creating lockfile ({lock_name})")
     cf = open(get_save_path(f"lock-{lock_name}", save_dir), 'wt')
     
     try:
@@ -274,8 +274,8 @@ def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str, pkg_repo:str='
             syslog.debug(f"Installing libs for {flow_object['name']} ({lock_name}): {flow_object['libs']}")
             for pkg_i in flow_object['libs']:
                 if not check_rscript_lib(pkg_i, libfolder):
-                    syslog.debug(f"Installing {pkg_i} for {flow_object['name']} ({lock_name})")
-                    run_script_install = subprocess.Popen()([
+                    syslog.debug(f"Starting installation of {pkg_i} for {flow_object['name']} ({lock_name})")
+                    run_script_install = subprocess.Popen([
                             'Rscript','-e', 
                             f"install.packages('{pkg_i}', repos='{pkg_repo}', lib='{libfolder}', dependencies=TRUE)"
                         ], 
@@ -284,11 +284,11 @@ def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str, pkg_repo:str='
                         stderr=subprocess.PIPE,
                         encoding='UTF-8',
                         env=env)
-                    run_rscript_nowait.lock_objects[lock_name] =  RScriptProcess(cf, run_script_install)
+                    run_rscript_nowait.lock_objects[lock_name] =  RScriptProcess(cf, run_script_install, flow_object)
                     return run_rscript_nowait.lock_objects.get(lock_name)
                     
         
-        syslog.debug(f"Libs are up-to-date, running script for {flow_object['name']} ({lock_name})")
+        syslog.debug(f"Libs are up-to-date, starting script for {flow_object['name']} ({lock_name})")
         # run the script
         popen = subprocess.Popen(
             ['Rscript', '--vanilla', get_asset_path(flow_object['name'], assets_dir)],
@@ -299,13 +299,13 @@ def run_rscript_nowait(flow_object, assets_dir:str, save_dir:str, pkg_repo:str='
             env=env,
         )
 
-        run_rscript_nowait.lock_objects[lock_name] =  RScriptProcess(cf, popen)
+        run_rscript_nowait.lock_objects[lock_name] =  RScriptProcess(cf, popen, flow_object)
             
     except BlockingIOError as locked_error:
         cf.close()
         syslog.error(locked_error)
 
-    syslog.debug(f"Done with {flow_object['name']}")
+    syslog.debug(f"Done with {flow_object['name']}.")
 
     return run_rscript_nowait.lock_objects.get(lock_name)
 
