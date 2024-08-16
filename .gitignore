@@ -150,3 +150,10 @@ checklink/cookies.txt
 # Quarto
 .quarto
 .devenv-corebridge/
+nbs/saves/rscript/libs/
+nbs/saves/rscript/input-checksum*
+nbs/saves/rscript/lock-*
+nbs/saves/rscript/stderr-*
+nbs/saves/rscript/stdout-*
+nbs/saves/rscript/Data/*.RData
+nbs/saves/rscript/*.RData
