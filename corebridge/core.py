@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 # %% ../nbs/00_core.ipynb 4
-def init_console_logging(name=None, level=logging.INFO):
+def init_console_logging(name=None, level=logging.INFO, timestamp=True):
     '''Setup none-blocking stream handler for sending loggin to the console.'''
 
     # Only if no handlers defined.
@@ -25,7 +25,12 @@ def init_console_logging(name=None, level=logging.INFO):
         console.setLevel(level)
 
         # set a format which is simpler for console use
-        formatter = logging.Formatter("%(asctime)s %(levelname)s\t%(process)d\t%(name)s\t%(filename)s\t%(lineno)d\t%(message)s", datefmt='%Y-%m-%dT%H:%M:%S%z')
+        if timestamp:
+            formatter = logging.Formatter("%(asctime)s %(levelname)s\t%(process)d\t%(name)s\t%(filename)s\t%(lineno)d\t%(message)s", datefmt='%Y-%m-%dT%H:%M:%S%z')
+        else:
+            formatter = logging.Formatter("%(levelname)s\t%(process)d\t%(name)s\t%(filename)s\t%(lineno)d\t%(message)s")
+            
+        #formatter = logging.Formatter("%(asctime)s %(levelname)s\t%(process)d\t%(name)s\t%(filename)s\t%(lineno)d\t%(message)s", datefmt='%Y-%m-%dT%H:%M:%S%z')
 
         # tell the handler to use this format
         console.setFormatter(formatter)
@@ -39,7 +44,7 @@ def init_console_logging(name=None, level=logging.INFO):
 
 # %% ../nbs/00_core.ipynb 5
 try:
-    logging.getLogger(__name__).info(f"Loading {__name__} from {__file__}")
+    logging.getLogger(__name__).info()(f"Loading {__name__} from {__file__}")
 except:
     pass
 

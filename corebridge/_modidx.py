@@ -60,5 +60,5 @@ d = { 'settings': { 'branch': 'main',
                                                                                    'corebridge/rscript.py'),
                                     'corebridge.rscript.run_rscript_nowait': ( 'rscriptbridge.html#run_rscript_nowait',
                                                                                'corebridge/rscript.py'),
-                                    'corebridge.rscript.run_rscript_wait': ( 'rscriptbridge.html#run_rscript_wait',
-                                                                             'corebridge/rscript.py')}}}
+                                    'corebridge.rscript.run_rscript_wait': ('rscriptbridge.html#run_rscript_wait', 'corebridge/rscript.py'),
+                                    'corebridge.rscript.unpack_assets': ('rscriptbridge.html#unpack_assets', 'corebridge/rscript.py')}}}
