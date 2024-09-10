@@ -3,13 +3,16 @@
 # %% auto 0
 __all__ = ['ResamplerMethods', 'ReSamplerPeriods', 'init_console_logging', 'set_time_index_zone', 'timeseries_dataframe',
            'timeseries_dataframe_from_datadict', 'pop_nan_values', 'timeseries_dataframe_to_datadict',
-           'timeseries_dataframe_resample']
+           'timeseries_dataframe_resample', 'AICoreModuleBase']
 
 # %% ../nbs/00_core.ipynb 3
 import typing, logging
-import os
+import os, datetime
 import numpy as np
 import pandas as pd
+
+from fastcore.basics import patch_to, patch
+
 
 # %% ../nbs/00_core.ipynb 4
 def init_console_logging(name=None, level=logging.INFO, timestamp=True):
@@ -42,13 +45,13 @@ def init_console_logging(name=None, level=logging.INFO, timestamp=True):
         logging.getLogger(name).info(f'There already is a logger installed for {name}.')
 
 
-# %% ../nbs/00_core.ipynb 5
+# %% ../nbs/00_core.ipynb 7
 try:
     logging.getLogger(__name__).info()(f"Loading {__name__} from {__file__}")
 except:
     pass
 
-# %% ../nbs/00_core.ipynb 8
+# %% ../nbs/00_core.ipynb 10
 def set_time_index_zone(df:pd.DataFrame, timezone):
     """
     Sets the time zone of the index of a pandas DataFrame.
@@ -83,7 +86,7 @@ def set_time_index_zone(df:pd.DataFrame, timezone):
     return df
 
 
-# %% ../nbs/00_core.ipynb 12
+# %% ../nbs/00_core.ipynb 14
 def timeseries_dataframe(
         data:typing.Union[pd.DataFrame, pd.Series, dict, np.ndarray, np.recarray], 
         timezone='UTC', 
@@ -140,7 +143,7 @@ def timeseries_dataframe(
 
     return set_time_index_zone(df, timezone)
 
-# %% ../nbs/00_core.ipynb 15
+# %% ../nbs/00_core.ipynb 17
 def timeseries_dataframe_from_datadict(
         data:dict, 
         timecolumns=None,
@@ -165,7 +168,7 @@ def timeseries_dataframe_from_datadict(
         df = pd.DataFrame.from_records(data)
         time_columns_in_df = [C for C in df.columns if C in timecolumns]
         if not  time_columns_in_df:
-            syslog.error(f"No  column in records {df.columns} matches specification in time columns {timecolumns}, assuming first column is time")
+            #syslog.error(f"No  column in records {df.columns} matches specification in time columns {timecolumns}, assuming first column is time")
             time_column = df.columns[0]
         else:
             time_column = time_columns_in_df[0]
@@ -191,7 +194,7 @@ def timeseries_dataframe_from_datadict(
     return df
 
 
-# %% ../nbs/00_core.ipynb 18
+# %% ../nbs/00_core.ipynb 20
 def pop_nan_values(data):
     """
     Recursively pop keys with nan values from dict or lists with dicts.
@@ -210,7 +213,7 @@ def pop_nan_values(data):
     else:
         return data
 
-# %% ../nbs/00_core.ipynb 19
+# %% ../nbs/00_core.ipynb 21
 def timeseries_dataframe_to_datadict(
         data:typing.Union[pd.DataFrame, pd.Series, dict], 
         recordformat:str='records', 
@@ -247,7 +250,7 @@ def timeseries_dataframe_to_datadict(
     return records    
 
 
-# %% ../nbs/00_core.ipynb 26
+# %% ../nbs/00_core.ipynb 28
 #def interpolate_timeseries(sampler, period, method_args):
 
 
@@ -290,4 +293,26 @@ def timeseries_dataframe_resample(df:pd.DataFrame, period:str, method:str):
 
     return pd.concat(dataframes, axis=1, join='outer')
 
+
+
+# %% ../nbs/00_core.ipynb 32
+class AICoreModuleBase:
+    pass
+
+
+# %% ../nbs/00_core.ipynb 33
+@patch
+def __init__(self:AICoreModuleBase, 
+            save_dir:str, # path where the module can keep files 
+            assets_dir:str, # path to support files (scripts, metadata, etc)
+            *args, **kwargs):
+    
+    self.init_time = datetime.datetime.now(datetime.UTC)
+
+    self.init_args = args
+    self.init_kwargs = dict(
+        **kwargs,
+        assets_dir=assets_dir,
+        save_dir=save_dir
+    )
 
