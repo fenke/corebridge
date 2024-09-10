@@ -6,7 +6,7 @@ __all__ = ['syslog', 'read_chunk_size', 'RScriptProcess', 'get_asset_path', 'get
            'calc_hash_from_flowobject', 'calc_hash_from_files', 'calc_hash_from_input_files',
            'calc_hash_from_data_files', 'check_script_inputs', 'check_script_output', 'generate_checksum_file',
            'run_rscript_wait', 'run_rscript_nowait', 'release_script_lock', 'AICoreRScriptModule',
-           'recursive_flatten_nested_data']
+           'snake_case_to_camel_case', 'recursive_flatten_nested_data']
 
 # %% ../nbs/02_rscriptbridge.ipynb 4
 import os, logging, json, hashlib
@@ -500,9 +500,14 @@ def update_flow(self:AICoreRScriptModule):
 
 
 # %% ../nbs/02_rscriptbridge.ipynb 125
+def snake_case_to_camel_case(snake_case:str) -> str:
+    splittext = snake_case.split('_')
+    return ''.join([x.capitalize() if n > 0 else x for x,n in zip(splittext, range(len(splittext)))])
+
 def recursive_flatten_nested_data(
         data:dict, 
-        column_prefix:str='') -> dict:
+        column_prefix:str='',
+        camel_case=False) -> dict:
     
     if isinstance(data, np.ndarray):
         return {column_prefix:data}
@@ -511,7 +516,7 @@ def recursive_flatten_nested_data(
         return reduce(
             lambda R, X: dict(**R, **X) if R else X,
             [
-                recursive_flatten_nested_data(value, f"{column_prefix}_{i+1}_")
+                recursive_flatten_nested_data(value, f"{column_prefix}_{i+1}_", camel_case)
                 for i, value in enumerate(data)
              
             ],
@@ -529,7 +534,9 @@ def recursive_flatten_nested_data(
                 [
                     recursive_flatten_nested_data(
                         value, 
-                        f"{column_prefix}{str(key).capitalize()}")
+                        snake_case_to_camel_case(column_prefix+'_'+str(key)) if camel_case else column_prefix+'_'+str(key),
+                        camel_case
+                    )
                     for key, value in data.items()
                 ],
                 {}
@@ -538,9 +545,12 @@ def recursive_flatten_nested_data(
         else:
             key = list(data.keys())[0]
             value = data[key]
-            column_name = f"{column_prefix}{str(key).capitalize()}" if column_prefix else str(key)
+            if column_prefix:
+                column_name = snake_case_to_camel_case(column_prefix+'_'+str(key)) if camel_case else column_prefix+'_'+str(key)
+            else:
+                column_name = snake_case_to_camel_case(str(key)) if camel_case else str(key)
             return recursive_flatten_nested_data(
-                value, column_name,
+                value, column_name, camel_case
             )
                 
 
@@ -558,15 +568,19 @@ def write_uploaded_data(
     df.reset_index().to_csv(csv_filename, index=False, date_format='%Y-%m-%d %H:%M:%S')
 
 @patch
-def read_data(self:AICoreRScriptModule, tag:str=None, **kwargs):
+def read_data(self:AICoreRScriptModule, tag:str=None, camel_case=False, **kwargs):
+    
     rdata_filename = self.get_save_path(self.data_files_map.get(tag, tag))
     converted = rdata.read_rda(rdata_filename)
 
     flattened = recursive_flatten_nested_data(converted)
     df = pd.DataFrame(flattened)
-    df.set_index( pd.DatetimeIndex(df['ensemble_predTime']), inplace=True)
+
+    time_column = [k for k,v in df.dtypes.to_dict().items() if 'float' not in str(v)][0]
+    df.set_index( pd.DatetimeIndex(df[time_column]), inplace=True)
     df.index.name = 'time'
-    df.drop('ensemble_predTime', axis=1, inplace=True)
+    df.drop(time_column, axis=1, inplace=True)
+
     return df
                                         
 
@@ -576,10 +590,6 @@ def infer(
     self:AICoreRScriptModule, 
     data:dict, 
     *_, 
-    writeTag:str=None,
-    readTag:str=None,
-    timezone:str='UTC',
-    recordformat:str='records',
     **kwargs):
 
     """ 
@@ -595,6 +605,10 @@ def infer(
         
         msg += self.update_flow()
         # Pickup params, pop those that are not intended for the processor
+        writeTag = kwargs.pop('writeTag', None)
+        readTag = kwargs.pop('readTag', None)
+        camelCase = bool(kwargs.pop('camelCase', False))
+
         lastSeen = kwargs.pop('lastSeen', False)
         recordformat = kwargs.pop('format', "records").lower()
         timezone = kwargs.get('timezone', 'UTC')
@@ -613,7 +627,7 @@ def infer(
             self.write_uploaded_data(df, writeTag)
 
         if readTag:
-            result = self.read_data(readTag)
+            result = self.read_data(readTag, camel_case=camelCase)
 
             if reversed:
                 result = result[::-1]

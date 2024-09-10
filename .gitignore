@@ -157,3 +157,5 @@ nbs/saves/rscript/stderr-*
 nbs/saves/rscript/stdout-*
 nbs/saves/rscript/Data/*.RData
 nbs/saves/rscript/*.RData
+nbs/saves/rscript/*.csv
+nbs/saves/rscript/*.R

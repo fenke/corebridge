@@ -78,7 +78,7 @@ def build_historic_args(data:pd.DataFrame, history:dict|list) -> dict:
 
 
 # %% ../nbs/01_aicorebridge.ipynb 12
-class AICoreModule(): pass
+class AICoreModule(AICoreModuleBase): pass
 
 # %% ../nbs/01_aicorebridge.ipynb 13
 @patch
@@ -199,6 +199,7 @@ annotated_arg_builders = {
     ]
 }
 
+
 # %% ../nbs/01_aicorebridge.ipynb 20
 @patch
 def init_annotated_param(self:AICoreModule, param_name, value):
@@ -252,7 +253,7 @@ def get_callargs(self:AICoreModule, kwargs, history):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 25
+# %% ../nbs/01_aicorebridge.ipynb 24
 @patch
 def get_call_data(
         self:AICoreModule, 

@@ -5,3 +5,975 @@ website:
       - 00_core.ipynb
       - 01_aicorebridge.ipynb
       - 02_rscriptbridge.ipynb
+      - section: saves
+        contents:
+          - section: rscript
+            contents:
+              - section: libs
+                contents:
+                  - section: Deriv
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/Deriv/html/00Index.html
+                  - section: Formula
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/Formula/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/Formula/html/00Index.html
+                  - section: R6
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/R6/html/00Index.html
+                  - section: RColorBrewer
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/RColorBrewer/html/00Index.html
+                  - section: Rcpp
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/Rcpp/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/Rcpp/html/00Index.html
+                  - section: RcppEigen
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/RcppEigen/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/RcppEigen/html/00Index.html
+                  - section: SparseM
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/SparseM/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/SparseM/html/00Index.html
+                  - section: TTR
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/TTR/html/00Index.html
+                  - section: abind
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/abind/html/00Index.html
+                  - section: askpass
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/askpass/html/00Index.html
+                  - section: backports
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/backports/html/00Index.html
+                  - section: base64enc
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/base64enc/html/00Index.html
+                  - section: bigD
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/bigD/html/00Index.html
+                  - section: bitops
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/bitops/html/00Index.html
+                  - section: brio
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/brio/html/00Index.html
+                  - section: broom
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/broom/doc/adding-tidiers.html
+                          - saves/rscript/libs/broom/doc/available-methods.html
+                          - saves/rscript/libs/broom/doc/bootstrapping.html
+                          - saves/rscript/libs/broom/doc/broom.html
+                          - saves/rscript/libs/broom/doc/broom_and_dplyr.html
+                          - saves/rscript/libs/broom/doc/kmeans.html
+                        href: saves/rscript/libs/broom/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/broom/html/00Index.html
+                  - section: bslib
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/bslib/html/00Index.html
+                  - section: cachem
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/cachem/html/00Index.html
+                  - section: carData
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/carData/html/00Index.html
+                  - section: chron
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/chron/html/00Index.html
+                  - section: cli
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/cli/html/00Index.html
+                  - section: clipr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/clipr/doc/developing-with-clipr.html
+                        href: saves/rscript/libs/clipr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/clipr/html/00Index.html
+                  - section: coda
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/coda/html/00Index.html
+                  - section: colorspace
+                    contents:
+                      - section: cvdemulator
+                        contents:
+                          - section: html
+                            contents:
+                              - saves/rscript/libs/colorspace/cvdemulator/html/appInfo.html
+                              - saves/rscript/libs/colorspace/cvdemulator/html/info.html
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/colorspace/doc/colorspace.html
+                        href: saves/rscript/libs/colorspace/doc/index.html
+                      - section: hclcolorpicker
+                        contents:
+                          - section: html
+                            contents:
+                              - saves/rscript/libs/colorspace/hclcolorpicker/html/info.html
+                      - section: hclwizard
+                        contents:
+                          - section: html
+                            contents:
+                              - saves/rscript/libs/colorspace/hclwizard/html/GrADS.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/R.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/RReg.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/Register.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/RegisterRcode.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/colorplane.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/info.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/matlab.html
+                              - saves/rscript/libs/colorspace/hclwizard/html/python.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/colorspace/html/00Index.html
+                  - section: commonmark
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/commonmark/html/00Index.html
+                  - section: covr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/covr/doc/how_it_works.html
+                        href: saves/rscript/libs/covr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/covr/html/00Index.html
+                  - section: cowplot
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/cowplot/doc/introduction.html
+                        href: saves/rscript/libs/cowplot/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/cowplot/html/00Index.html
+                  - section: cpp11
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/cpp11/doc/FAQ.html
+                          - saves/rscript/libs/cpp11/doc/converting.html
+                          - saves/rscript/libs/cpp11/doc/cpp11.html
+                          - saves/rscript/libs/cpp11/doc/internals.html
+                          - saves/rscript/libs/cpp11/doc/motivations.html
+                        href: saves/rscript/libs/cpp11/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/cpp11/html/00Index.html
+                  - section: crayon
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/crayon/html/00Index.html
+                  - section: credentials
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/credentials/doc/intro.html
+                        href: saves/rscript/libs/credentials/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/credentials/html/00Index.html
+                  - section: curl
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/curl/doc/intro.html
+                          - saves/rscript/libs/curl/doc/windows.html
+                        href: saves/rscript/libs/curl/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/curl/html/00Index.html
+                  - section: desc
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/desc/html/00Index.html
+                  - section: diffobj
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/diffobj/doc/diffobj.html
+                          - saves/rscript/libs/diffobj/doc/embed.html
+                        href: saves/rscript/libs/diffobj/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/diffobj/html/00Index.html
+                  - section: digest
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/digest/doc/sha1.html
+                        href: saves/rscript/libs/digest/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/digest/html/00Index.html
+                  - section: doBy
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/doBy/doc/doby.html
+                          - saves/rscript/libs/doBy/doc/model_stability.html
+                          - saves/rscript/libs/doBy/doc/section_fun.html
+                        href: saves/rscript/libs/doBy/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/doBy/html/00Index.html
+                  - section: dplyr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/dplyr/doc/base.html
+                          - saves/rscript/libs/dplyr/doc/colwise.html
+                          - saves/rscript/libs/dplyr/doc/dplyr.html
+                          - saves/rscript/libs/dplyr/doc/grouping.html
+                          - saves/rscript/libs/dplyr/doc/in-packages.html
+                          - saves/rscript/libs/dplyr/doc/programming.html
+                          - saves/rscript/libs/dplyr/doc/rowwise.html
+                          - saves/rscript/libs/dplyr/doc/two-table.html
+                          - saves/rscript/libs/dplyr/doc/window-functions.html
+                        href: saves/rscript/libs/dplyr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/dplyr/html/00Index.html
+                  - section: evaluate
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/evaluate/html/00Index.html
+                  - section: fansi
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/fansi/doc/sgr-in-rmd.html
+                        href: saves/rscript/libs/fansi/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/fansi/html/00Index.html
+                  - section: farver
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/farver/html/00Index.html
+                  - section: fastmap
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/fastmap/html/00Index.html
+                  - section: fontawesome
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/fontawesome/html/00Index.html
+                  - section: fs
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/fs/doc/function-comparisons.html
+                        href: saves/rscript/libs/fs/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/fs/html/00Index.html
+                  - section: generics
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/generics/html/00Index.html
+                  - section: gert
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/gert/doc/gert.html
+                        href: saves/rscript/libs/gert/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/gert/html/00Index.html
+                  - section: ggplot2
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/ggplot2/doc/extending-ggplot2.html
+                          - saves/rscript/libs/ggplot2/doc/ggplot2-in-packages.html
+                          - saves/rscript/libs/ggplot2/doc/ggplot2-specs.html
+                          - saves/rscript/libs/ggplot2/doc/ggplot2.html
+                        href: saves/rscript/libs/ggplot2/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/ggplot2/html/00Index.html
+                  - section: gh
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/gh/doc/managing-personal-access-tokens.html
+                        href: saves/rscript/libs/gh/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/gh/html/00Index.html
+                  - section: gitcreds
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/gitcreds/doc/helper-survey.html
+                          - saves/rscript/libs/gitcreds/doc/package.html
+                        href: saves/rscript/libs/gitcreds/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/gitcreds/html/00Index.html
+                  - section: glue
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/glue/doc/engines.html
+                          - saves/rscript/libs/glue/doc/transformers.html
+                        href: saves/rscript/libs/glue/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/glue/html/00Index.html
+                  - section: gtable
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/gtable/doc/profiling.html
+                        href: saves/rscript/libs/gtable/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/gtable/html/00Index.html
+                  - section: highr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/highr/doc/highr-custom.html
+                          - saves/rscript/libs/highr/doc/highr-internals.html
+                        href: saves/rscript/libs/highr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/highr/html/00Index.html
+                  - section: htmltools
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/htmltools/html/00Index.html
+                  - section: htmlwidgets
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/htmlwidgets/doc/develop_advanced.html
+                          - saves/rscript/libs/htmlwidgets/doc/develop_intro.html
+                          - saves/rscript/libs/htmlwidgets/doc/develop_sizing.html
+                        href: saves/rscript/libs/htmlwidgets/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/htmlwidgets/html/00Index.html
+                  - section: httr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/httr/doc/api-packages.html
+                          - saves/rscript/libs/httr/doc/quickstart.html
+                          - saves/rscript/libs/httr/doc/secrets.html
+                        href: saves/rscript/libs/httr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/httr/html/00Index.html
+                  - section: httr2
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/httr2/doc/httr2.html
+                        href: saves/rscript/libs/httr2/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/httr2/html/00Index.html
+                  - section: ini
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/ini/html/00Index.html
+                  - section: isoband
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/isoband/doc/isoband1.html
+                          - saves/rscript/libs/isoband/doc/isoband3.html
+                        href: saves/rscript/libs/isoband/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/isoband/html/00Index.html
+                  - section: jquerylib
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/jquerylib/html/00Index.html
+                  - section: jsonlite
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/jsonlite/doc/json-aaquickstart.html
+                          - saves/rscript/libs/jsonlite/doc/json-apis.html
+                          - saves/rscript/libs/jsonlite/doc/json-paging.html
+                        href: saves/rscript/libs/jsonlite/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/jsonlite/html/00Index.html
+                  - section: knitr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/knitr/doc/datatables.html
+                          - saves/rscript/libs/knitr/doc/docco-classic.html
+                          - saves/rscript/libs/knitr/doc/docco-linear.html
+                          - saves/rscript/libs/knitr/doc/knit_expand.html
+                          - saves/rscript/libs/knitr/doc/knit_print.html
+                          - saves/rscript/libs/knitr/doc/knitr-html.html
+                          - saves/rscript/libs/knitr/doc/knitr-intro.html
+                          - saves/rscript/libs/knitr/doc/knitr-markdown.html
+                        href: saves/rscript/libs/knitr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/knitr/html/00Index.html
+                      - section: misc
+                        contents:
+                          - saves/rscript/libs/knitr/misc/vignette.html
+                      - section: opencpu
+                        contents:
+                          - section: apps
+                            contents: []
+                            href: saves/rscript/libs/knitr/opencpu/apps/index.html
+                  - section: labeling
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/labeling/html/00Index.html
+                  - section: lifecycle
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/lifecycle/doc/communicate.html
+                          - saves/rscript/libs/lifecycle/doc/manage.html
+                          - saves/rscript/libs/lifecycle/doc/stages.html
+                        href: saves/rscript/libs/lifecycle/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/lifecycle/html/00Index.html
+                  - section: lmtest
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/lmtest/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/lmtest/html/00Index.html
+                  - section: lubridate
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/lubridate/doc/lubridate.html
+                        href: saves/rscript/libs/lubridate/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/lubridate/html/00Index.html
+                  - section: magrittr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/magrittr/doc/magrittr.html
+                          - saves/rscript/libs/magrittr/doc/tradeoffs.html
+                        href: saves/rscript/libs/magrittr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/magrittr/html/00Index.html
+                  - section: markdown
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/markdown/html/00Index.html
+                      - section: resources
+                        contents:
+                          - saves/rscript/libs/markdown/resources/markdown.html
+                  - section: memoise
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/memoise/html/00Index.html
+                  - section: microbenchmark
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/microbenchmark/html/00Index.html
+                  - section: mime
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/mime/html/00Index.html
+                  - section: minqa
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/minqa/html/00Index.html
+                  - section: modelr
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/modelr/html/00Index.html
+                  - section: mondate
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/mondate/html/00Index.html
+                  - section: munsell
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/munsell/html/00Index.html
+                  - section: numDeriv
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/numDeriv/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/numDeriv/html/00Index.html
+                  - section: openssl
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/openssl/doc/bignum.html
+                          - saves/rscript/libs/openssl/doc/crypto_hashing.html
+                          - saves/rscript/libs/openssl/doc/keys.html
+                          - saves/rscript/libs/openssl/doc/secure_rng.html
+                        href: saves/rscript/libs/openssl/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/openssl/html/00Index.html
+                  - section: pillar
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/pillar/doc/debugme.html
+                          - saves/rscript/libs/pillar/doc/digits.html
+                          - saves/rscript/libs/pillar/doc/extending.html
+                          - saves/rscript/libs/pillar/doc/numbers.html
+                          - saves/rscript/libs/pillar/doc/printing.html
+                        href: saves/rscript/libs/pillar/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/pillar/html/00Index.html
+                  - section: pkgconfig
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/pkgconfig/html/00Index.html
+                  - section: pkgload
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/pkgload/html/00Index.html
+                  - section: praise
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/praise/html/00Index.html
+                  - section: purrr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/purrr/doc/base.html
+                          - saves/rscript/libs/purrr/doc/other-langs.html
+                        href: saves/rscript/libs/purrr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/purrr/html/00Index.html
+                  - section: quadprog
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/quadprog/html/00Index.html
+                  - section: quantmod
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/quantmod/html/00Index.html
+                  - section: rappdirs
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/rappdirs/html/00Index.html
+                  - section: reactR
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/reactR/doc/intro_htmlwidgets.html
+                          - saves/rscript/libs/reactR/doc/intro_inputs.html
+                          - saves/rscript/libs/reactR/doc/intro_reactR.html
+                        href: saves/rscript/libs/reactR/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/reactR/html/00Index.html
+                  - section: reactable
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/reactable/html/00Index.html
+                  - section: rematch2
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/rematch2/html/00Index.html
+                  - section: rlang
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/rlang/html/00Index.html
+                  - section: rmarkdown
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/rmarkdown/doc/lua-filters.html
+                          - saves/rscript/libs/rmarkdown/doc/rmarkdown.html
+                        href: saves/rscript/libs/rmarkdown/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/rmarkdown/html/00Index.html
+                      - section: rmarkdown
+                        contents:
+                          - section: templates
+                            contents:
+                              - section: github_document
+                                contents:
+                                  - section: resources
+                                    contents:
+                                      - saves/rscript/libs/rmarkdown/rmarkdown/templates/github_document/resources/preview.html
+                      - section: rmd
+                        contents:
+                          - section: fragment
+                            contents:
+                              - saves/rscript/libs/rmarkdown/rmd/fragment/default.html
+                          - section: h
+                            contents:
+                              - saves/rscript/libs/rmarkdown/rmd/h/default.html
+                              - saves/rscript/libs/rmarkdown/rmd/h/shiny-header.html
+                              - section: jqueryui
+                                contents: []
+                                href: saves/rscript/libs/rmarkdown/rmd/h/jqueryui/index.html
+                          - section: ioslides
+                            contents:
+                              - saves/rscript/libs/rmarkdown/rmd/ioslides/default.html
+                          - section: slidy
+                            contents:
+                              - saves/rscript/libs/rmarkdown/rmd/slidy/default.html
+                  - section: rprojroot
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/rprojroot/doc/rprojroot.html
+                        href: saves/rscript/libs/rprojroot/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/rprojroot/html/00Index.html
+                  - section: rstudioapi
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/rstudioapi/doc/dialogs.html
+                          - saves/rscript/libs/rstudioapi/doc/document-manipulation.html
+                          - saves/rscript/libs/rstudioapi/doc/introduction.html
+                          - saves/rscript/libs/rstudioapi/doc/projects.html
+                          - saves/rscript/libs/rstudioapi/doc/r-session.html
+                          - saves/rscript/libs/rstudioapi/doc/terminal.html
+                          - saves/rscript/libs/rstudioapi/doc/visual-mode.html
+                        href: saves/rscript/libs/rstudioapi/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/rstudioapi/html/00Index.html
+                  - section: sandwich
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/sandwich/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/sandwich/html/00Index.html
+                  - section: sass
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/sass/doc/sass.html
+                        href: saves/rscript/libs/sass/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/sass/html/00Index.html
+                  - section: scales
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/scales/html/00Index.html
+                  - section: stinepack
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/stinepack/html/00Index.html
+                  - section: stringi
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/stringi/html/00Index.html
+                  - section: stringr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/stringr/doc/from-base.html
+                          - saves/rscript/libs/stringr/doc/regular-expressions.html
+                          - saves/rscript/libs/stringr/doc/stringr.html
+                        href: saves/rscript/libs/stringr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/stringr/html/00Index.html
+                  - section: strucchange
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/strucchange/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/strucchange/html/00Index.html
+                  - section: sys
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/sys/html/00Index.html
+                  - section: testthat
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/testthat/doc/custom-expectation.html
+                          - saves/rscript/libs/testthat/doc/parallel.html
+                          - saves/rscript/libs/testthat/doc/skipping.html
+                          - saves/rscript/libs/testthat/doc/snapshotting.html
+                          - saves/rscript/libs/testthat/doc/special-files.html
+                          - saves/rscript/libs/testthat/doc/test-fixtures.html
+                          - saves/rscript/libs/testthat/doc/third-edition.html
+                        href: saves/rscript/libs/testthat/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/testthat/html/00Index.html
+                  - section: tibble
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/tibble/doc/digits.html
+                          - saves/rscript/libs/tibble/doc/extending.html
+                          - saves/rscript/libs/tibble/doc/formats.html
+                          - saves/rscript/libs/tibble/doc/invariants.html
+                          - saves/rscript/libs/tibble/doc/numbers.html
+                          - saves/rscript/libs/tibble/doc/tibble.html
+                          - saves/rscript/libs/tibble/doc/types.html
+                        href: saves/rscript/libs/tibble/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/tibble/html/00Index.html
+                  - section: tidyr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/tidyr/doc/in-packages.html
+                          - saves/rscript/libs/tidyr/doc/nest.html
+                          - saves/rscript/libs/tidyr/doc/pivot.html
+                          - saves/rscript/libs/tidyr/doc/programming.html
+                          - saves/rscript/libs/tidyr/doc/rectangle.html
+                          - saves/rscript/libs/tidyr/doc/tidy-data.html
+                        href: saves/rscript/libs/tidyr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/tidyr/html/00Index.html
+                  - section: tidyselect
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/tidyselect/doc/syntax.html
+                          - saves/rscript/libs/tidyselect/doc/tidyselect.html
+                        href: saves/rscript/libs/tidyselect/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/tidyselect/html/00Index.html
+                  - section: timeDate
+                    contents:
+                      - saves/rscript/libs/timeDate/COPYRIGHT.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/timeDate/html/00Index.html
+                  - section: timeSeries
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/timeSeries/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/timeSeries/html/00Index.html
+                  - section: timechange
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/timechange/html/00Index.html
+                  - section: tinytex
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/tinytex/html/00Index.html
+                  - section: tis
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/tis/html/00Index.html
+                  - section: tseries
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/tseries/html/00Index.html
+                  - section: usethis
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/usethis/html/00Index.html
+                  - section: utf8
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/utf8/doc/utf8.html
+                        href: saves/rscript/libs/utf8/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/utf8/html/00Index.html
+                  - section: vctrs
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/vctrs/doc/pillar.html
+                          - saves/rscript/libs/vctrs/doc/s3-vector.html
+                          - saves/rscript/libs/vctrs/doc/stability.html
+                          - saves/rscript/libs/vctrs/doc/type-size.html
+                        href: saves/rscript/libs/vctrs/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/vctrs/html/00Index.html
+                  - section: viridisLite
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/viridisLite/html/00Index.html
+                  - section: waldo
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/waldo/html/00Index.html
+                  - section: whisker
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/whisker/html/00Index.html
+                  - section: withr
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/withr/doc/withr.html
+                        href: saves/rscript/libs/withr/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/withr/html/00Index.html
+                  - section: xfun
+                    contents:
+                      - section: doc
+                        contents:
+                          - saves/rscript/libs/xfun/doc/xfun.html
+                        href: saves/rscript/libs/xfun/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/xfun/html/00Index.html
+                      - section: resources
+                        contents:
+                          - saves/rscript/libs/xfun/resources/record.html
+                  - section: xts
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/xts/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/xts/html/00Index.html
+                  - section: yaml
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/yaml/html/00Index.html
+                  - section: zip
+                    contents:
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/zip/html/00Index.html
+                  - section: zoo
+                    contents:
+                      - section: doc
+                        contents: []
+                        href: saves/rscript/libs/zoo/doc/index.html
+                      - section: html
+                        contents:
+                          - saves/rscript/libs/zoo/html/00Index.html
