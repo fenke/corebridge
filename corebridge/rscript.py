@@ -19,6 +19,7 @@ from functools import reduce
 from collections import namedtuple
 from fastcore.basics import patch_to, patch
 
+import corebridge
 from .core import *
 
 
@@ -412,6 +413,8 @@ class AICoreRScriptModule(AICoreModuleBase):
                 *args, **kwargs):
         
         super().__init__(save_dir, assets_dir, *args, **kwargs)
+    
+        self.corebridge_version = corebridge.__version__
 
         self.flow_mapping = flow_mapping
         self.cran_repo = cran_repo
@@ -573,8 +576,9 @@ def read_data(self:AICoreRScriptModule, tag:str=None, camel_case=False, **kwargs
     rdata_filename = self.get_save_path(self.data_files_map.get(tag, tag))
     converted = rdata.read_rda(rdata_filename)
 
-    flattened = recursive_flatten_nested_data(converted)
+    flattened = recursive_flatten_nested_data(converted, camel_case=camel_case)
     df = pd.DataFrame(flattened)
+    syslog.debug(f"Read {df.shape[0]} rows from {rdata_filename} for {tag} (camel_case={camel_case})")
 
     time_column = [k for k,v in df.dtypes.to_dict().items() if 'float' not in str(v)][0]
     df.set_index( pd.DatetimeIndex(df[time_column]), inplace=True)
@@ -600,6 +604,7 @@ def infer(
 
         msg=[
             f"Startup time: {self.init_time.isoformat()}",
+            f"Corebridge version: {self.corebridge_version}",
             f"init_args: {self.init_args}, init_kwargs: {self.init_kwargs}",
         ]
         
@@ -608,6 +613,7 @@ def infer(
         writeTag = kwargs.pop('writeTag', None)
         readTag = kwargs.pop('readTag', None)
         camelCase = bool(kwargs.pop('camelCase', False))
+        msg.append(f"writeTag: {writeTag}, readTag: {readTag}, camelCase: {camelCase}")
 
         lastSeen = kwargs.pop('lastSeen', False)
         recordformat = kwargs.pop('format', "records").lower()

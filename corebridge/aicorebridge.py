@@ -89,6 +89,7 @@ def __init__(self:AICoreModule,
              *args, **kwargs):
     
     self.init_time = datetime.datetime.now(datetime.UTC)
+    self.aicorebridge_version = __version__
     self._init_processor(processor)
 
     self.init_args = args
@@ -128,6 +129,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
 
         msg=[
             f"Startup time: {self.init_time.isoformat()}",
+            f"Corebridge version: {self.aicorebridge_version}",
             f"{self.processor.__name__}({self.processor_signature})",             
             f"init_args: {self.init_args}, init_kwargs: {self.init_kwargs}",
         ]
