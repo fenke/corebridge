@@ -160,4 +160,3 @@ nbs/saves/rscript/*.RData
 nbs/saves/rscript/*.csv
 nbs/saves/rscript/*.R
 nbs/saves/rscript/temp/
-nbs/saves/
