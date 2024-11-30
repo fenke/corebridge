@@ -147,8 +147,11 @@ checklink/cookies.txt
 .deb
 .pkg
 
+
 # Quarto
 .quarto
+
+# project
 .devenv-corebridge/
 nbs/saves/rscript/libs/
 nbs/saves/rscript/input-checksum*
@@ -160,3 +163,7 @@ nbs/saves/rscript/*.RData
 nbs/saves/rscript/*.csv
 nbs/saves/rscript/*.R
 nbs/saves/rscript/temp/
+nbs/saves/
+
+# Data
+*.zip
