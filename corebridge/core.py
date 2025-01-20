@@ -61,7 +61,8 @@ def set_time_index_zone(df:pd.DataFrame, timezone):
         timezone (str): The desired time zone.
 
     Returns:
-        pd.DataFrame: The DataFrame with its index time zone set to the specified time zone.
+        pd.DataFrame: The modified DataFrame with its index time zone set 
+        to the specified time zone.
 
     Raises:
         None
@@ -104,10 +105,12 @@ def timeseries_dataframe(
     """
 
     if isinstance(data, pd.DataFrame):
-        df = data
+        df = data.copy()
+        df.index = pd.DatetimeIndex(df.index).round('ms')
 
     elif isinstance(data, pd.Series):
         df = pd.DataFrame(data)
+        df.index = pd.DatetimeIndex(df.index).round('ms')
 
     elif isinstance(data, dict):
         # assume a dict/mapping of individual arrays representing timeseries 
@@ -194,7 +197,7 @@ def timeseries_dataframe_from_datadict(
     return df
 
 
-# %% ../nbs/00_core.ipynb 20
+# %% ../nbs/00_core.ipynb 23
 def pop_nan_values(data):
     """
     Recursively pop keys with nan values from dict or lists with dicts.
@@ -213,7 +216,7 @@ def pop_nan_values(data):
     else:
         return data
 
-# %% ../nbs/00_core.ipynb 21
+# %% ../nbs/00_core.ipynb 35
 def timeseries_dataframe_to_datadict(
         data:typing.Union[pd.DataFrame, pd.Series, dict], 
         recordformat:str='records', 
@@ -237,8 +240,13 @@ def timeseries_dataframe_to_datadict(
 
     normalized_data = timeseries_dataframe(data, timezone=timezone)
     if isinstance(normalized_data.index, pd.DatetimeIndex):
-        normalized_data.index = normalized_data.index.map(lambda x: x.isoformat())
-    
+        if timezone == 'UTC':
+            print(f"Normalized, UTC")
+            normalized_data.index = normalized_data.index.strftime("%FT%R:%SZ")
+        else:
+            print(f"Normalized, {timezone}")
+            normalized_data.index = normalized_data.index.map(lambda x: x.isoformat(timespec='milliseconds'))
+                 
     if orient == 'records':
         records = normalized_data.reset_index().to_dict(orient='records')
     else:
@@ -250,7 +258,7 @@ def timeseries_dataframe_to_datadict(
     return records    
 
 
-# %% ../nbs/00_core.ipynb 28
+# %% ../nbs/00_core.ipynb 51
 #def interpolate_timeseries(sampler, period, method_args):
 
 
@@ -295,12 +303,12 @@ def timeseries_dataframe_resample(df:pd.DataFrame, period:str, method:str):
 
 
 
-# %% ../nbs/00_core.ipynb 32
+# %% ../nbs/00_core.ipynb 55
 class AICoreModuleBase:
     pass
 
 
-# %% ../nbs/00_core.ipynb 33
+# %% ../nbs/00_core.ipynb 56
 @patch
 def __init__(self:AICoreModuleBase, 
             save_dir:str, # path where the module can keep files 
