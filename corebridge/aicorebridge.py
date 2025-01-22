@@ -112,14 +112,28 @@ def _init_processor(
     self.processor_signature = inspect.signature(self.processor)
     self.processor_params = dict(self.processor_signature.parameters)
     self.return_param = self.processor_params.pop('return', None)
+    
     self.data_param, *self.call_params = list(self.processor_params.keys())
+
+    if not (
+        self.processor_params[self.data_param].annotation == pd.DataFrame
+        or self.processor_params[self.data_param].annotation == np.ndarray
+
+    ):
+
+        self.data_param = None
+        self.call_params = list(self.processor_params.keys())
+
 
 
 # %% ../nbs/01_aicorebridge.ipynb 15
 # can be overloaded
 @patch
 def call_processor(self:AICoreModule, calldata, **callargs):
-    return self.processor(calldata, **callargs)
+    if self.data_param:
+        return self.processor(calldata, **callargs)
+    else:
+        return self.processor(**callargs)
 
 
 # %% ../nbs/01_aicorebridge.ipynb 17
@@ -149,7 +163,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
             recordformat=recordformat,
             timezone=timezone)
         
-        msg.append(f"calldata shape: {calldata.shape}")
+        #msg.append(f"calldata shape: {calldata.shape}")
 
         history = build_historic_args(calldata, kwargs.pop('history', {}))
 
@@ -157,32 +171,52 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
 
         for arg, val in callargs.items():
             msg.append(f"{arg}: {val}")
-            
-        result = timeseries_dataframe(
-            self.call_processor(
-                calldata, 
-                **callargs), 
-            timezone=timezone)
         
-        msg.append(f"result shape: {result.shape}")
+        calculated_result = self.call_processor(
+            calldata, 
+            **callargs
+        )
 
-        if samplerMethod:
-            msg.append(f"Sampler: {samplerMethod}, period: {samplerPeriod}")
-            result = timeseries_dataframe_resample(result, samplerPeriod, samplerMethod)
+        try:
+            result = timeseries_dataframe(
+                calculated_result, 
+                timezone=timezone)
+            
+            msg.append(f"result shape: {result.shape}")
 
-        msg.append(f"return-data shape: {result.shape}")
+            if samplerMethod:
+                msg.append(f"Sampler: {samplerMethod}, period: {samplerPeriod}")
+                result = timeseries_dataframe_resample(result, samplerPeriod, samplerMethod)
 
-        if reversed:
-            result = result[::-1]
+            msg.append(f"return-data shape: {result.shape}")
 
+            if reversed:
+                result = result[::-1]
+
+            return {
+                'msg':msg,
+                'data': timeseries_dataframe_to_datadict(
+                    result if not lastSeen else result[-1:],
+                    recordformat=recordformat,
+                    timezone=timezone,
+                    popNaN=True)
+            }
+        
+        # tries dataframe return
+        except Exception as err:
+            msg.append(f"No timeseries data, error={err}")
+        
+        df = pd.DataFrame(calculated_result)
+        df
+        df.columns = [f"value_{str(c)}" if isinstance(c, int) else str(c) for c in list(df.columns)]
+        df.reset_index().to_dict(orient='records')
         return {
             'msg':msg,
-            'data': timeseries_dataframe_to_datadict(
-                result if not lastSeen else result[-1:],
-                recordformat=recordformat,
-                timezone=timezone,
-                popNaN=True)
+            'data': df.reset_index().to_dict(orient='records')
         }
+
+    
+    # function try-catch
     except Exception as err:
         msg.append(''.join(traceback.format_exception(None, err, err.__traceback__)))
         syslog.exception(f"Exception {str(err)} in infer()")
@@ -264,6 +298,9 @@ def get_call_data(
         timezone='UTC'):
     
     "Convert data to the processor signature"
+    
+    if not self.data_param:
+        return None
 
     df = set_time_index_zone(timeseries_dataframe_from_datadict(
         data, ['datetimeMeasure', 'time'], recordformat), timezone)
