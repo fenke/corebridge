@@ -52,7 +52,10 @@ except:
     pass
 
 # %% ../nbs/00_core.ipynb 10
-def set_time_index_zone(df:pd.DataFrame, timezone):
+def set_time_index_zone(
+        df:pd.DataFrame,    # Dataframe to set or convert the timeindex on
+        timezone            # Timezone to set
+    ) :
     """
     Sets the time zone of the index of a pandas DataFrame.
 
