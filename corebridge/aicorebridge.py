@@ -78,30 +78,19 @@ def build_historic_args(data:pd.DataFrame, history:dict|list) -> dict:
 
 
 # %% ../nbs/01_aicorebridge.ipynb 12
-class AICoreModule(AICoreModuleBase): pass
-
-# %% ../nbs/01_aicorebridge.ipynb 13
-@patch
-def __init__(self:AICoreModule, 
+class AICoreModule(AICoreModuleBase):
+    def __init__(self, 
              processor:typing.Callable, # data processing function
              save_dir:str, # path where the module can keep files 
              assets_dir:str,
              *args, **kwargs):
     
-    self.init_time = datetime.datetime.now(datetime.UTC)
-    self.aicorebridge_version = __version__
-    self._init_processor(processor)
-
-    self.init_args = args
-    self.init_kwargs = dict(
-        **kwargs,
-        assets_dir=assets_dir,
-        save_dir=save_dir
-    )
+        super().__init__(save_dir, assets_dir, *args, **kwargs)
+        self._init_processor(processor)
 
 
 
-# %% ../nbs/01_aicorebridge.ipynb 14
+# %% ../nbs/01_aicorebridge.ipynb 13
 @patch
 def _init_processor(
         self:AICoreModule, 
@@ -112,17 +101,31 @@ def _init_processor(
     self.processor_signature = inspect.signature(self.processor)
     self.processor_params = dict(self.processor_signature.parameters)
     self.return_param = self.processor_params.pop('return', None)
+    
     self.data_param, *self.call_params = list(self.processor_params.keys())
 
+    if not (
+        self.processor_params[self.data_param].annotation == pd.DataFrame
+        or self.processor_params[self.data_param].annotation == np.ndarray
 
-# %% ../nbs/01_aicorebridge.ipynb 15
+    ):
+
+        self.data_param = None
+        self.call_params = list(self.processor_params.keys())
+
+
+
+# %% ../nbs/01_aicorebridge.ipynb 14
 # can be overloaded
 @patch
 def call_processor(self:AICoreModule, calldata, **callargs):
-    return self.processor(calldata, **callargs)
+    if self.data_param:
+        return self.processor(calldata, **callargs)
+    else:
+        return self.processor(**callargs)
 
 
-# %% ../nbs/01_aicorebridge.ipynb 17
+# %% ../nbs/01_aicorebridge.ipynb 16
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
     try:
@@ -149,7 +152,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
             recordformat=recordformat,
             timezone=timezone)
         
-        msg.append(f"calldata shape: {calldata.shape}")
+        #msg.append(f"calldata shape: {calldata.shape}")
 
         history = build_historic_args(calldata, kwargs.pop('history', {}))
 
@@ -157,32 +160,52 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
 
         for arg, val in callargs.items():
             msg.append(f"{arg}: {val}")
-            
-        result = timeseries_dataframe(
-            self.call_processor(
-                calldata, 
-                **callargs), 
-            timezone=timezone)
         
-        msg.append(f"result shape: {result.shape}")
+        calculated_result = self.call_processor(
+            calldata, 
+            **callargs
+        )
 
-        if samplerMethod:
-            msg.append(f"Sampler: {samplerMethod}, period: {samplerPeriod}")
-            result = timeseries_dataframe_resample(result, samplerPeriod, samplerMethod)
+        try:
+            result = timeseries_dataframe(
+                calculated_result, 
+                timezone=timezone)
+            
+            msg.append(f"result shape: {result.shape}")
 
-        msg.append(f"return-data shape: {result.shape}")
+            if samplerMethod:
+                msg.append(f"Sampler: {samplerMethod}, period: {samplerPeriod}")
+                result = timeseries_dataframe_resample(result, samplerPeriod, samplerMethod)
 
-        if reversed:
-            result = result[::-1]
+            msg.append(f"return-data shape: {result.shape}")
 
+            if reversed:
+                result = result[::-1]
+
+            return {
+                'msg':msg,
+                'data': timeseries_dataframe_to_datadict(
+                    result if not lastSeen else result[-1:],
+                    recordformat=recordformat,
+                    timezone=timezone,
+                    popNaN=True)
+            }
+        
+        # tries dataframe return
+        except Exception as err:
+            msg.append(f"No timeseries data, error={err}")
+        
+        df = pd.DataFrame(calculated_result)
+        df
+        df.columns = [f"value_{str(c)}" if isinstance(c, int) else str(c) for c in list(df.columns)]
+        df.reset_index().to_dict(orient='records')
         return {
             'msg':msg,
-            'data': timeseries_dataframe_to_datadict(
-                result if not lastSeen else result[-1:],
-                recordformat=recordformat,
-                timezone=timezone,
-                popNaN=True)
+            'data': df.reset_index().to_dict(orient='records')
         }
+
+    
+    # function try-catch
     except Exception as err:
         msg.append(''.join(traceback.format_exception(None, err, err.__traceback__)))
         syslog.exception(f"Exception {str(err)} in infer()")
@@ -192,7 +215,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 19
+# %% ../nbs/01_aicorebridge.ipynb 18
 # Specialized types for initializing annotated parameters
 # Add types by adding a tuple with the type name and a builder function
 annotated_arg_builders = {
@@ -202,7 +225,7 @@ annotated_arg_builders = {
 }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 20
+# %% ../nbs/01_aicorebridge.ipynb 19
 @patch
 def init_annotated_param(self:AICoreModule, param_name, value):
     """
@@ -229,7 +252,7 @@ def init_annotated_param(self:AICoreModule, param_name, value):
 
  
 
-# %% ../nbs/01_aicorebridge.ipynb 21
+# %% ../nbs/01_aicorebridge.ipynb 20
 @patch
 def get_callargs(self:AICoreModule, kwargs, history):
     "Get arguments for the processor call"
@@ -255,7 +278,7 @@ def get_callargs(self:AICoreModule, kwargs, history):
     }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 24
+# %% ../nbs/01_aicorebridge.ipynb 23
 @patch
 def get_call_data(
         self:AICoreModule, 
@@ -264,6 +287,9 @@ def get_call_data(
         timezone='UTC'):
     
     "Convert data to the processor signature"
+    
+    if not self.data_param:
+        return None
 
     df = set_time_index_zone(timeseries_dataframe_from_datadict(
         data, ['datetimeMeasure', 'time'], recordformat), timezone)

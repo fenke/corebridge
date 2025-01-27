@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from fastcore.basics import patch_to, patch
+from . import __version__
 
 
 # %% ../nbs/00_core.ipynb 4
@@ -319,6 +320,7 @@ def __init__(self:AICoreModuleBase,
             *args, **kwargs):
     
     self.init_time = datetime.datetime.now(datetime.UTC)
+    self.aicorebridge_version = __version__
 
     self.init_args = args
     self.init_kwargs = dict(
