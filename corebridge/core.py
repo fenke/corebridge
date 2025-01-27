@@ -314,10 +314,12 @@ class AICoreModuleBase:
 
 # %% ../nbs/00_core.ipynb 56
 @patch
-def __init__(self:AICoreModuleBase, 
-            save_dir:str, # path where the module can keep files 
-            assets_dir:str, # path to support files (scripts, metadata, etc)
-            *args, **kwargs):
+def __init__(
+    self:AICoreModuleBase, 
+    save_dir:str, # path where the module can keep files 
+    assets_dir:str, # path to support files (scripts, metadata, etc)
+    *args, **kwargs
+    ):
     
     self.init_time = datetime.datetime.now(datetime.UTC)
     self.aicorebridge_version = __version__
