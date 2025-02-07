@@ -25,7 +25,7 @@ syslog = logging.getLogger(__name__)
 
 # %% ../nbs/01_aicorebridge.ipynb 6
 try:
-    print(f"Loading {__name__} {__version__} from {__file__}")
+    syslog.debug(f"Loading {__name__} {__version__} from {__file__}")
 except:
     pass
 
@@ -134,7 +134,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
             f"Startup time: {self.init_time.isoformat()}",
             f"Corebridge version: {self.aicorebridge_version}",
             f"{self.processor.__name__}({self.processor_signature})",             
-            f"init_args: {self.init_args}, init_kwargs: {self.init_kwargs}",
+            #f"init_args: {self.init_args}, init_kwargs: {self.init_kwargs}",
         ]
 
         # Pickup params, pop those that are not intended for the processor
