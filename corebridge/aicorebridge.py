@@ -91,6 +91,8 @@ class AICoreModule(AICoreModuleBase):
 
 
 # %% ../nbs/01_aicorebridge.ipynb 13
+# TODO: Refactor into Processor classes to handle different funtion types
+
 @patch
 def _init_processor(
         self:AICoreModule, 
