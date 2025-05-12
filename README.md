@@ -72,6 +72,13 @@ parameters and data to the function specification and, calls the
 function and converts the result for the caller, similar to the original
 Wodan service.
 
+You don’t have to use AICoreModule baseclas but can create your own
+class and use functionality within CoreBridge to convert call parameters
+and data to fit your needs. AICoreModule was developed to make the
+deployment of existing Wodan modules within AICore easier. It also helps
+developing functions independently of AICore while being able to deploy
+these functions as modules within AICore.
+
 ## Development
 
 ### NBDev
@@ -152,7 +159,10 @@ kernel needs to be installed with:
 The latter performs - nbdev_export - nbdev_test - nbdev_clean -
 nbdev_readme
 
-Then commit and to upload to Pypi with `nbdev_pypi`
+Before committing changes to git run - nbdev_clean
+
+Then commit to git and for a new pip release upload to Pypi with
+`nbdev_pypi`
 
 [^1]: [Wikipedia on ‘Literate
     Programming’](https://en.wikipedia.org/wiki/Literate_programming)
