@@ -340,5 +340,5 @@ def __init__(
     )
 
 
-    syslog.info(f"Init {self.__class__.__name__}, version {self.aicorebridge_version} from {__file__}, assets dir {assets_dir}, save dir {save_dir}")
+    syslog.info(f"Init {self.__class__.__name__}, version {self.aicorebridge_version}, assets dir {assets_dir}, save dir {save_dir}")
 

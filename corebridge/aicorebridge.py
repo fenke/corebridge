@@ -11,6 +11,7 @@ import inspect
 import datetime
 import json
 import os
+import time
 import pandas, pandas as pd
 import numpy, numpy as np
 
@@ -132,12 +133,15 @@ def call_processor(self:AICoreModule, calldata, **callargs):
 # %% ../nbs/01_aicorebridge.ipynb 19
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
+    """Infer the data using the processor function."""
+
     msg=[
         f"Startup time: {self.init_time.isoformat()}",
         f"Corebridge version: {self.aicorebridge_version}",
     ]
 
     try:
+        t00 = time.perf_counter_ns()
         kwargs["data"] = data
         msg+=[
             f"{self.processor.__name__}({self.processor_signature})",  
@@ -161,18 +165,20 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
             recordformat=recordformat,
             timezone=timezone)
             
-
         history = build_historic_args(calldata, kwargs.pop('history', {}))
-
         callargs = self.get_callargs(kwargs, history)
 
         for arg, val in callargs.items():
             msg.append(f"{arg}: {val}")
         
+        t02 = time.perf_counter_ns()
         calculated_result = self.call_processor(
             calldata, 
             **callargs
         )
+        t03 = time.perf_counter_ns()
+        msg.append(f"Processing time: {(t03-t02)/1e6:.1f} ms")
+        msg.append(f"Preparation time: {(t02-t00)/1e6:.1f} ms")
 
         if isinstance(calculated_result, dict):
             msg.append(f"return-data ictionary keys: {calculated_result.keys()}")
