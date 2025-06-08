@@ -168,8 +168,8 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
         history = build_historic_args(calldata, kwargs.pop('history', {}))
         callargs = self.get_callargs(kwargs, history)
 
-        for arg, val in callargs.items():
-            msg.append(f"{arg}: {val}")
+        # for arg, val in callargs.items():
+        #     msg.append(f"{arg}: {val}")
         
         t02 = time.perf_counter_ns()
         calculated_result = self.call_processor(
@@ -235,7 +235,6 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
     # function try-catch
     except Exception as err:
         msg.append(''.join(traceback.format_exception(None, err, err.__traceback__)))
-        syslog.exception(f"Exception {str(err)} in infer()")
         return {
             'msg': msg,
             'data': []
@@ -252,7 +251,7 @@ annotated_arg_builders = {
 }
 
 
-# %% ../nbs/01_aicorebridge.ipynb 22
+# %% ../nbs/01_aicorebridge.ipynb 23
 @patch
 def init_annotated_param(self:AICoreModule, param_name, value):
     """
@@ -269,7 +268,7 @@ def init_annotated_param(self:AICoreModule, param_name, value):
     # try to convert value to one of the types in the builders of annotated_arg_builders
     for T in typing.get_args(annotation):
         try:
-            builder = annotated_arg_builders.get(str(T), T)
+            builder = annotated_arg_builders.get(str(T), lambda X:T(X))
             return builder(value)
         
         except TypeError as err:
@@ -283,7 +282,7 @@ def init_annotated_param(self:AICoreModule, param_name, value):
 
  
 
-# %% ../nbs/01_aicorebridge.ipynb 23
+# %% ../nbs/01_aicorebridge.ipynb 24
 @patch
 def get_callargs(self:AICoreModule, kwargs, history):
     "Get arguments for the processor call"
@@ -320,7 +319,7 @@ def get_callargs(self:AICoreModule, kwargs, history):
     return call_args
 
 
-# %% ../nbs/01_aicorebridge.ipynb 26
+# %% ../nbs/01_aicorebridge.ipynb 27
 @patch
 def get_call_data(
         self:AICoreModule, 

@@ -230,7 +230,7 @@ def pop_nan_values(data):
     else:
         return data
 
-# %% ../nbs/00_core.ipynb 36
+# %% ../nbs/00_core.ipynb 37
 def timeseries_dataframe_to_datadict(
         data:typing.Union[pd.DataFrame, pd.Series, dict], 
         recordformat:str='records', 
@@ -270,7 +270,7 @@ def timeseries_dataframe_to_datadict(
     return records    
 
 
-# %% ../nbs/00_core.ipynb 52
+# %% ../nbs/00_core.ipynb 53
 #def interpolate_timeseries(sampler, period, method_args):
 
 
@@ -315,12 +315,12 @@ def timeseries_dataframe_resample(df:pd.DataFrame, period:str, method:str):
 
 
 
-# %% ../nbs/00_core.ipynb 56
+# %% ../nbs/00_core.ipynb 57
 class AICoreModuleBase:
     pass
 
 
-# %% ../nbs/00_core.ipynb 57
+# %% ../nbs/00_core.ipynb 58
 @patch
 def __init__(
     self:AICoreModuleBase, 
