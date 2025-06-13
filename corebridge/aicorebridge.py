@@ -295,15 +295,15 @@ def get_callargs(self:AICoreModule, kwargs, history):
             K,
             history.get(
                 K,
-                self.init_kwargs.get(
+                kwargs.get(
                     K,
-                    kwargs.get(
+                    self.init_kwargs.get(
                         K, 
                         history.get(
                             snake_case_to_camel_case(K),
-                            self.init_kwargs.get(
+                            kwargs.get(
                                 snake_case_to_camel_case(K),
-                                kwargs.get(
+                                self.init_kwargs.get(
                                     snake_case_to_camel_case(K), 
                                     self.processor_signature.parameters[K].default
                                 )
