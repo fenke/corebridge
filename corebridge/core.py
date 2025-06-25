@@ -6,13 +6,14 @@ __all__ = ['syslog', 'ResamplerMethods', 'ReSamplerPeriods', 'init_console_loggi
            'timeseries_dataframe_to_datadict', 'timeseries_dataframe_resample', 'AICoreModuleBase']
 
 # %% ../nbs/00_core.ipynb 3
-import typing, logging
-import os, datetime
+import typing
+import logging
+import datetime
 import numpy as np
 import pandas as pd
 
 from functools import lru_cache
-from fastcore.basics import patch_to, patch
+from fastcore.basics import patch
 from . import __version__
 
 
@@ -49,8 +50,8 @@ def init_console_logging(name=None, level=logging.INFO, timestamp=True):
 
 # %% ../nbs/00_core.ipynb 6
 try:
-    logging.getLogger(__name__).info()(f"Loading {__name__} from {__file__}")
-except:
+    logging.getLogger(__name__).info(f"Loading {__name__} from {__file__}")
+except:  # noqa: E722
     pass
 
 syslog = logging.getLogger(__name__)
@@ -197,7 +198,7 @@ def timeseries_dataframe_from_datadict(
         df.index.name = 'time'
     else:
         # data  is formatted according to 'orient' parameter (pandas)
-        df = pd.DataFrame.from_dict(data, orient=orient)
+        df = pd.DataFrame.from_dict(data, orient=orient) # type: ignore
         time_column = df.index.name
 
 
