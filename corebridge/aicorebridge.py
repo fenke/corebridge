@@ -189,7 +189,7 @@ def call_processor(self:AICoreModule, calldata, **callargs):
 @patch
 def infer(self:AICoreModule, data:dict, *_, **kwargs):
     """Infer the data using the processor function."""
-
+    
     msg=[
         f"Startup time: {self.init_time.isoformat()}",
         f"Corebridge version: {self.aicorebridge_version}",
@@ -221,7 +221,7 @@ def infer(self:AICoreModule, data:dict, *_, **kwargs):
             recordformat=recordformat,
             timezone=timezone,
             nested=nested,)
-            
+        
         history = build_historic_args(calldata, kwargs.pop('history', {}))
         callargs = self.get_callargs(kwargs, history)
 
@@ -388,6 +388,8 @@ def get_call_data(
     
     if not self.data_param:
         return None
+    
+    print(f"recordformat: {recordformat}, timezone: {timezone}, nested: {nested}" )
 
     df = set_time_index_zone(timeseries_dataframe_from_datadict(
         data, ['datetimeMeasure', 'time'], recordformat=recordformat, nested=nested), timezone)

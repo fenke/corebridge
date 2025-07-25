@@ -142,6 +142,8 @@ def timeseries_dataframe_from_datadict(
     orient = recordformat.lower()
     assert orient in ['records', 'table', 'split', 'index', 'tight']
     assert timecolumns, 'No time columns specified'
+
+    print(f"Converting {'nested' if nested else 'flat'} data dict to DataFrame with orient={orient} and timecolumns={timecolumns}")
     
     if orient == 'records':
         if nested:
