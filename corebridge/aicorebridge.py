@@ -186,9 +186,11 @@ def call_processor(self:AICoreModule, calldata, **callargs):
 
 # %% ../nbs/11_aicorebridge.ipynb 29
 @patch
-def call(self:AICoreModule, payload_datadata:dict, *_, **__):
+def call(self:AICoreModule, data:dict, *_, **__):
     """Infer the data using the processor function."""
-    
+
+    payload_data = data
+
     msg=[
         f"Startup: time {self.init_time.isoformat()}, node {platform.node()}",
         f"Corebridge version: {self.aicorebridge_version}",
@@ -197,8 +199,8 @@ def call(self:AICoreModule, payload_datadata:dict, *_, **__):
     try:
         t00 = time.perf_counter_ns()
 
-        kwargs = payload_datadata.get('kwargs', {})
-        data = payload_datadata.get('data', {})
+        kwargs = payload_data.get('kwargs', {})
+        data = payload_data.get('data', {})
 
         msg+=[
             f"{self.processor.__name__}({self.processor_signature})",  
