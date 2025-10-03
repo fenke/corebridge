@@ -60,8 +60,8 @@ def multiply(data:np.ndarray, multiplier:float=1.0):
     return data * multiplier
 
 class CustomModule(corebridge.aicorebridge.AICoreModule):
-    def __init__(self, save_dir, assets_dir, *args, **kwargs):
-        super().__init__(multiply, save_dir, assets_dir, *args, **kwargs)
+    def __init__(self, files_dir, save_dir):
+        super().__init__(multiply, files_dir, save_dir)
     
 ```
 
