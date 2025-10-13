@@ -45,12 +45,11 @@ fetching data and parameters and converting the result for the caller.
 
 ### AICore modules
 
-For AICore users define a class, always named `CustomModule` with a
+For AICore users define a class, always named `Module` with a
 constructor `__init__` and a method `infer`.
 
-This package defines a baseclass to quickly construct a `CustomModule`
-class that is able to use a wodan processor function inside the AICore
-system:
+This package defines a baseclass to quickly construct a `Module` class
+that is able to use a wodan processor function inside the AICore system:
 
 ``` {python}
 import numpy as np
@@ -59,9 +58,9 @@ import corebridge
 def multiply(data:np.ndarray, multiplier:float=1.0):
     return data * multiplier
 
-class CustomModule(corebridge.aicorebridge.AICoreModule):
-    def __init__(self, files_dir, save_dir):
-        super().__init__(multiply, files_dir, save_dir)
+class Module(corebridge.aicorebridge.AICoreModule):
+    def __init__(self, save_dir, assets_dir, *args, **kwargs):
+        super().__init__(multiply, save_dir, assets_dir, *args, **kwargs)
     
 ```
 

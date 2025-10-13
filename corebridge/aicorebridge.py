@@ -118,7 +118,8 @@ class AICoreModuleBase:
     def __init__(
         self, 
         files_dir, 
-        save_dir
+        save_dir,
+        **kwargs
     ):
         
         self.init_time = datetime.datetime.now(datetime.UTC)
@@ -127,7 +128,8 @@ class AICoreModuleBase:
         self.init_args = []
         self.init_kwargs = dict(
             files_dir=files_dir,
-            save_dir=save_dir
+            save_dir=save_dir,
+            **kwargs
         )
 
 
@@ -139,10 +141,11 @@ class AICoreModule(AICoreModuleBase):
     def __init__(self, 
         processor:typing.Callable, # data processing function
         files_dir:str,              # path where the module can keep files 
-        save_dir:str
+        save_dir:str,
+        **kwargs
     ):
     
-        super().__init__(files_dir, save_dir)
+        super().__init__(files_dir, save_dir, **kwargs)
         self._init_processor(processor)
 
 
