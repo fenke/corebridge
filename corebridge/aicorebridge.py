@@ -396,7 +396,7 @@ def get_call_data(
     if not self.data_param:
         return None
     
-    print(f"recordformat: {recordformat}, timezone: {timezone}, nested: {nested}" )
+    #print(f"recordformat: {recordformat}, timezone: {timezone}, nested: {nested}" )
 
     df = set_time_index_zone(timeseries_dataframe_from_datadict(
         data, ['datetimeMeasure', 'time'], recordformat=recordformat, nested=nested), timezone)
