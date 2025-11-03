@@ -31,16 +31,14 @@ from .timeseriesdataframe import set_time_index_zone, timeseries_dataframe_from_
 #| eval: false
 # logging basic configuration
 logging.basicConfig(
-    format="%(asctime)s \t%(levelname)s\t%(name)s\t%(message)s",
+    format="%(asctime)s \t%(levelname)s\t%(funcName)s\t%(lineno)d\t%(message)s",
     datefmt="%Y-%m-%dT%H:%M:%S%z",
     level=logging.INFO
 )
 
 
-# %% ../nbs/11_aicorebridge.ipynb 6
-syslog = init_console_logging(__name__, logging.INFO, timestamp=False)
-
 # %% ../nbs/11_aicorebridge.ipynb 7
+syslog = logging.getLogger(__name__)
 try:
     syslog.info(f"Loading {__name__} {__version__} from {__file__}")
 except:  # noqa: E722

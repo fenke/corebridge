@@ -23,13 +23,13 @@ from . import __version__
 
 
 # %% ../nbs/00_core.ipynb 5
-def init_console_logging(name=None, level=logging.INFO, timestamp=True):
+def init_console_logging(name='root', level=logging.INFO, timestamp=True):
     '''Setup none-blocking stream handler for sending loggin to the console.'''
 
     # Only if no handlers defined.
     if not logging.getLogger(name).handlers:
 
-        logger = logging.getLogger()
+        logger = logging.getLogger(name)
         logger.setLevel(level)
 
         console = logging.StreamHandler()
@@ -53,15 +53,23 @@ def init_console_logging(name=None, level=logging.INFO, timestamp=True):
         logging.getLogger(name).info(f'There already is a logger installed for {name}.')
 
 
-# %% ../nbs/00_core.ipynb 6
+# %% ../nbs/00_core.ipynb 7
+logging.basicConfig(
+    format="%(asctime)s \t%(levelname)s\t%(funcName)s\t%(lineno)d\t%(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S%z",
+    level=logging.DEBUG
+)
+
+syslog = logging.getLogger(__name__)
+
 try:
     logging.getLogger(__name__).info(f"Loading {__name__} from {__file__}")
 except:  # noqa: E722
     pass
 
-syslog = logging.getLogger(__name__)
 
-# %% ../nbs/00_core.ipynb 8
+
+# %% ../nbs/00_core.ipynb 10
 def get_machine_info():
     # Get OS details
     os_name = os.name  # 'posix', 'nt', or 'os2'
@@ -87,14 +95,14 @@ def get_machine_info():
 
 
 
-# %% ../nbs/00_core.ipynb 11
+# %% ../nbs/00_core.ipynb 13
 @lru_cache(128)
 def snake_case_to_camel_case(snake_case:str) -> str:
     splittext = snake_case.split('_')
     return ''.join([x.capitalize() if n > 0 else x for x,n in zip(splittext, range(len(splittext)))])
 
 
-# %% ../nbs/00_core.ipynb 13
+# %% ../nbs/00_core.ipynb 15
 #| echo: false
 class NumpyEncoder(json.JSONEncoder):
     """ Custom encoder for numpy data types """
@@ -129,7 +137,7 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-# %% ../nbs/00_core.ipynb 16
+# %% ../nbs/00_core.ipynb 18
 def set_time_index_zone(
         df:pd.DataFrame,    # Dataframe to set or convert the timeindex on
         timezone            # Timezone to set
@@ -168,7 +176,7 @@ def set_time_index_zone(
     return df
 
 
-# %% ../nbs/00_core.ipynb 20
+# %% ../nbs/00_core.ipynb 22
 def timeseries_dataframe(
         data:typing.Union[pd.DataFrame, pd.Series, dict, np.ndarray, np.recarray], 
         timezone='UTC', 
@@ -227,7 +235,7 @@ def timeseries_dataframe(
 
     return set_time_index_zone(df, timezone)
 
-# %% ../nbs/00_core.ipynb 23
+# %% ../nbs/00_core.ipynb 25
 def timeseries_dataframe_from_datadict(
         data:dict, 
         timecolumns=None,
