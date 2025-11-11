@@ -21,22 +21,20 @@ from dateutil import parser
 from fastcore.basics import patch
 from . import __version__
 
-from .core import snake_case_to_camel_case, NumpyEncoder
+from .core import snake_case_to_camel_case, NumpyEncoder, init_console_logging
 from .timeseriesdataframe import timeseries_dataframe, timeseries_dataframe_resample, timeseries_dataframe_to_datadict
 from .timeseriesdataframe import set_time_index_zone, timeseries_dataframe_from_datadict
 
 
 
 # %% ../nbs/11_aicorebridge.ipynb 5
-#| eval: false
-syslog = logging.getLogger(__name__)
-
+syslog = init_console_logging(__name__)
 try:
-    syslog.debug(f"Loading {__name__} {__version__} from {__file__}")
+    syslog.info(f"Loading {__name__} {__version__} from {__file__}")
 except:  # noqa: E722
     pass
 
-# %% ../nbs/11_aicorebridge.ipynb 10
+# %% ../nbs/11_aicorebridge.ipynb 9
 def pop_nan_values(data):
     """
     Recursively pop keys with nan values from dict or lists with 
@@ -57,7 +55,7 @@ def pop_nan_values(data):
     else:
         return data
 
-# %% ../nbs/11_aicorebridge.ipynb 14
+# %% ../nbs/11_aicorebridge.ipynb 13
 def build_historic_args(
         data:pd.DataFrame, 
         history:dict|list
@@ -112,7 +110,7 @@ def build_historic_args(
     return pd.DataFrame(column_data, index=data.index)
 
 
-# %% ../nbs/11_aicorebridge.ipynb 21
+# %% ../nbs/11_aicorebridge.ipynb 20
 class AICoreModuleBase:
 
     def __init__(
@@ -136,7 +134,7 @@ class AICoreModuleBase:
         syslog.info(f"Init {self.__class__.__name__}, version {self.aicorebridge_version}, files directory {files_dir}, save dir {save_dir} on {platform.node()}")
 
 
-# %% ../nbs/11_aicorebridge.ipynb 25
+# %% ../nbs/11_aicorebridge.ipynb 24
 class AICoreModule(AICoreModuleBase):
     def __init__(self, 
         processor:typing.Callable, # data processing function
@@ -150,7 +148,7 @@ class AICoreModule(AICoreModuleBase):
 
 
 
-# %% ../nbs/11_aicorebridge.ipynb 26
+# %% ../nbs/11_aicorebridge.ipynb 25
 # TODO: Refactor into Processor classes to handle different funtion types
 
 @patch
@@ -177,7 +175,7 @@ def _init_processor(
 
 
 
-# %% ../nbs/11_aicorebridge.ipynb 27
+# %% ../nbs/11_aicorebridge.ipynb 26
 # can be overloaded
 @patch
 def call_processor(self:AICoreModule, calldata, **callargs):
@@ -187,7 +185,7 @@ def call_processor(self:AICoreModule, calldata, **callargs):
         return self.processor(**callargs)
 
 
-# %% ../nbs/11_aicorebridge.ipynb 29
+# %% ../nbs/11_aicorebridge.ipynb 28
 @patch
 def call(self:AICoreModule, data:dict, *_, **__):
     """Infer the data using the processor function."""
@@ -195,7 +193,8 @@ def call(self:AICoreModule, data:dict, *_, **__):
     payload_data = data
 
     msg=[
-        f"Startup: time {self.init_time.isoformat()}, node {platform.node()}",
+        f"Startup time: {self.init_time.isoformat()}, node {platform.node()}",
+        f"Call time: {datetime.datetime.now(datetime.UTC).isoformat()}",
         f"Corebridge version: {self.aicorebridge_version}",
     ]
 
@@ -304,7 +303,7 @@ def call(self:AICoreModule, data:dict, *_, **__):
         }
 
 
-# %% ../nbs/11_aicorebridge.ipynb 31
+# %% ../nbs/11_aicorebridge.ipynb 30
 # Specialized types for initializing annotated parameters
 # Add types by adding a tuple with the type name and a builder function
 annotated_arg_builders = {
@@ -314,7 +313,7 @@ annotated_arg_builders = {
 }
 
 
-# %% ../nbs/11_aicorebridge.ipynb 33
+# %% ../nbs/11_aicorebridge.ipynb 32
 @patch
 def init_annotated_param(self:AICoreModule, param_name, value):
     """
@@ -345,7 +344,7 @@ def init_annotated_param(self:AICoreModule, param_name, value):
 
  
 
-# %% ../nbs/11_aicorebridge.ipynb 34
+# %% ../nbs/11_aicorebridge.ipynb 33
 @patch
 def get_callargs(self:AICoreModule, kwargs, history):
     "Get arguments for the processor call"
@@ -382,7 +381,7 @@ def get_callargs(self:AICoreModule, kwargs, history):
     return call_args
 
 
-# %% ../nbs/11_aicorebridge.ipynb 37
+# %% ../nbs/11_aicorebridge.ipynb 36
 @patch
 def get_call_data(
         self:AICoreModule, 
