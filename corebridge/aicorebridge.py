@@ -13,8 +13,9 @@ import inspect
 import platform
 import datetime
 import time
-import pandas as pd
+import psutil
 
+import pandas as pd
 import numpy as np
 
 from dateutil import parser
@@ -196,6 +197,9 @@ def call(self:AICoreModule, data:dict, *_, **__):
         f"Startup time: {self.init_time.isoformat()}, node {platform.node()}",
         f"Call time: {datetime.datetime.now(datetime.UTC).isoformat()}",
         f"Corebridge version: {self.aicorebridge_version}",
+        f"CPU times: {", ".join([f"{k}: {v}" for k, v in psutil.cpu_times_percent()._asdict().items() ])}",
+        f"Memory: {", ".join([f"{k}: {v}" for k, v in psutil.virtual_memory()._asdict().items() ])}",
+
     ]
 
     try:
@@ -207,7 +211,7 @@ def call(self:AICoreModule, data:dict, *_, **__):
         msg+=[
             f"{self.processor.__name__}({self.processor_signature})",  
             f"Data: {type(data)} length: {len(data)}",    
-            f"kwargs {list(kwargs.keys())}",       
+            f"kwargs {list(kwargs.keys())}",  
             #f"init_args: {self.init_args}, init_kwargs: {self.init_kwargs}",
         ]
 
