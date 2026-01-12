@@ -4,7 +4,7 @@
 
 # %% auto 0
 __all__ = ['annotated_arg_builders', 'pop_nan_values', 'build_historic_args', 'AICoreModuleBase', 'AICoreModule',
-           'create_basic_custom_module']
+           'create_basic_module_class']
 
 # %% ../nbs/11_aicorebridge.ipynb 4
 import typing
@@ -417,12 +417,12 @@ def get_call_data(
         
 
 # %% ../nbs/11_aicorebridge.ipynb 51
-def create_basic_custom_module(processing_function, class_name='Module'):
-
+def create_basic_module_class(processing_function, class_name='Module'):
+    syslog.info(f"create_basic_module_class({processing_function.__name__}, {class_name})")
     def __init__(self, files_dir, save_dir):
-        super(new_module, self).__init__(processing_function, files_dir, save_dir)
+        super(new_module_class, self).__init__(processing_function, files_dir, save_dir)
 
-    new_module = type(
+    new_module_class = type(
         class_name,
         (AICoreModule,),
         {
@@ -430,4 +430,4 @@ def create_basic_custom_module(processing_function, class_name='Module'):
         }
     )
 
-    return new_module
+    return new_module_class
