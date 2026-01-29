@@ -8,6 +8,7 @@ __all__ = ['annotated_arg_builders', 'pop_nan_values', 'build_historic_args', 'A
 
 # %% ../nbs/11_aicorebridge.ipynb 4
 import typing
+import sys
 import traceback
 import inspect
 import platform
@@ -196,6 +197,7 @@ def call(self:AICoreModule, data:dict, *_, **__):
     msg=[
         f"Startup time: {self.init_time.isoformat()}, node {platform.node()}",
         f"Call time: {datetime.datetime.now(datetime.UTC).isoformat()}",
+        f"Python version: {sys.version}",
         f"Corebridge version: {self.aicorebridge_version}",
         f"CPU times: {', '.join([f'{k}: {v}' for k, v in psutil.cpu_times_percent()._asdict().items() ])}",
         f"Memory: {', '.join([f'{k}: {v}' for k, v in psutil.virtual_memory()._asdict().items() ])}",
