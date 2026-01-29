@@ -1,13 +1,71 @@
 [build-system]
-requires = ["setuptools >= 77.0.3"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
 
 [project]
-name="corebridge"
+name = "corebridge"
 requires-python=">=3.10"
-dynamic = [ "keywords", "description", "version", "dependencies", "optional-dependencies", "readme", "authors", "classifiers", "entry-points", "scripts", "urls"]
+authors = [{name = "Fenke Meijer", email = "fenkemeijer@gmail.com"}]
+readme = "README.md"
 license = "Apache-2.0"
-license-files = ["LICEN[CS]E*"]
+license-files = ["LICENSE"]
+dynamic = ["version", "description"]
+dependencies = [
+    "python-dateutil",
+    "pytz",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "fastcore",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Jupyter",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Utilities",
+]
 
-[tool.uv]
-cache-keys = [{ file = "pyproject.toml" }, { file = "settings.ini" }, { file = "setup.py" }]
+[project.urls]
+Home = "https://github.com/fenke/corebridge"
+Documentation = "https://fenke.github.io/corebridge/"
+
+[project.optional-dependencies]
+dev = [
+    "python-dateutil",
+    "pytz",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "fastcore",
+    "jupyter",
+    "jupyter_contrib_nbextensions",
+    "jupyterlab-git",
+    "jupyterlab-quarto",
+    "nbdev",
+    "aiohttp",
+    "asyncpg",
+    "tabulate",
+    "rdata",
+]
+
+[tool.flit.sdist]
+exclude = ["nbs/"]
+
+[tool.autopep8]
+max_line_length = 96
+ignore = "E501" 
+in-place = true
+recursive = true
+aggressive = 3
+
+[tool.black]
+line-length = 98
+skip-string-normalization = true
+verbose=false
+quiet=true
+

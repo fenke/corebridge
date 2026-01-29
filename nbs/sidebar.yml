@@ -3,5 +3,5 @@ website:
     contents:
       - index.ipynb
       - 00_core.ipynb
-      - 01_aicorebridge.ipynb
-      - 02_rscriptbridge.ipynb
+      - 02_timeseriesdataframe.ipynb
+      - 11_aicorebridge.ipynb

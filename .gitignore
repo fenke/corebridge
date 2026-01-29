@@ -168,3 +168,4 @@ nbs/saves/
 # Data
 *.zip
 corebridge/saves/
+pyproject-nbdev.toml
